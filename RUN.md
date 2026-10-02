@@ -61,6 +61,12 @@ Jeśli zwykły Podpis GOV jest już otwarty, najpierw go zamknij (patrz [Problem
 **PodpisGOV-x64 sam dodaje wystawcę PWPW** do ustawień Podpis GOV. Zwykle od razu zobaczysz certyfikaty i możesz
 przejść do Kroku 3. Poniższe kroki są potrzebne tylko wtedy, gdy na liście wystawców nie ma „PWPW S.A.”.
 
+> [!WARNING]
+> Jeśli dodasz wystawcę PWPW ręcznie, **przed podpisem zamknij Podpis GOV** (ikona na górnym pasku → Wyjście)
+> **i uruchom PodpisGOV-x64 ponownie.** Okno wyboru pliku zapisuje ścieżkę z „ó”, a przy niej lista certyfikatów
+> działa, ale podpis kończy się błędem. PIN nie jest wtedy zużywany. Launcher poprawia ścieżkę przy starcie.
+> Inni wystawcy (np. Certum, tokeny USB) nie są zmieniani.
+
 1. Otwórz okno wyboru certyfikatu. Po uruchomieniu Podpis GOV działa w tle (na górnym pasku widać
    tylko „java” i ikonę z opcją „Wyjście”), więc **kliknij PodpisGOV-x64 jeszcze raz**: otworzy się okno
    z listą wystawców. Okno pojawia się też samo, gdy podpisujesz dokument na stronie gov.pl.
