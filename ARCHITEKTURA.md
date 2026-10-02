@@ -136,6 +136,12 @@ Szczegóły techniczne: [README — Przyczyna](README.md#przyczyna).
 - Brak tokenów przed zakończeniem odczytu w aplikacji e-dowód i 5 tokenów po nim:
   `zsh patch-podpisgov-x64.sh --check`.
 - Zatrzymanie samego rozszerzenia CryptoTokenKit nie pomaga. Moduł potrzebuje sesji aplikacji e-dowód.
+- **Podpis kwalifikowany odnowionym certyfikatem działa natywnie przez CryptoTokenKit** (2026-10-03, arm64, bez Rosetty
+  i bez Podpis GOV): rozszerzenie z aplikacji e-dowód udostępnia każdy certyfikat kwalifikowany jako osobną tożsamość
+  (certyfikat + klucz), więc duplikat `CKA_ID` nie przeszkadza. Test: `tools/ctk-sign-test.swift` (RSA 2048,
+  PKCS#1 v1.5 SHA-256, podpis zweryfikowany certyfikatem). To podstawa ewentualnego lekkiego zamiennika Podpis GOV:
+  e-usługi wysyłają do `/rest/sign` tylko dane do podpisu (`toBeSigned`, np. `SignedInfo` XAdES z ePUAP) i algorytm
+  skrótu, a plik podpisu składa serwer.
 
 Ikony aplikacji na diagramie należą do PWPW S.A. (e-dowód) i COI (Podpis GOV). Użyto ich wyłącznie do
 identyfikacji aplikacji.
