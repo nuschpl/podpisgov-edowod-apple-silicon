@@ -5,6 +5,13 @@
 Ta instrukcja jest dla osób, które **mają już zainstalowaną poprawkę** (zobacz [Instalacja](INSTALL.md)).
 Nie trzeba tu nic wpisywać w Terminalu.
 
+> [!IMPORTANT]
+> **Na Macu są DWA foldery „Aplikacje”. Nie pomyl ich.**
+> - **Aplikacje** (systemowy, `/Applications`, w Finderze na pasku bocznym): tu są zwykły **Podpis GOV**
+>   i **e-dowód** od PWPW. **Tego Podpis GOV nie używaj**, bo nie widzi e-dowodu.
+> - **Aplikacje w katalogu domowym** (`~/Applications`, Finder → **Idź → Katalog domowy → Aplikacje**):
+>   tu jest **PodpisGOV-x64**. **To jest ta właściwa ikona.**
+
 ## Co musisz mieć przy sobie
 
 - **Dowód osobisty z warstwą elektroniczną** (e-dowód, wydany od marca 2019).
