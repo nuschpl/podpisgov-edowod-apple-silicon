@@ -150,8 +150,10 @@ if grep -q '^lib = /Applications/e-dowo.*d\.app/Contents/lib/e-dowod-pkcs11-64\.
   FIXED=1
 fi
 if ! grep -q "^lib = $LIB_LINK" "\$CFG"; then
+  # brak wystawcy PWPW: pierwsze uruchomienie albo Podpis GOV zapisał pustą listę po błędzie (null w trybie podpisu)
   N=\$(grep -c '^\\[Tokens/Token' "\$CFG")
   printf '[Tokens/Token%s]\\napi = PKCS_11\\nmanufacturerID = PWPW S.A.\\nslot = 2\\nlib = %s\\n\\n' "\$N" "$LIB_LINK" >> "\$CFG"
+  FIXED=1
 fi
 
 # 2. Podpis GOV już działa?
@@ -166,7 +168,7 @@ if [[ -n "\$RUNNING" ]]; then
     exit 0
   fi
   if (( FIXED )); then
-    ANS=\$(osascript -e 'button returned of (display dialog "Poprawiono ścieżkę do modułu e-dowodu w ustawieniach Podpis GOV (wystawca dodany ręcznie zawiera „ó”).\n\nŻeby podpis zadziałał, Podpis GOV musi zostać uruchomiony ponownie." buttons {"Później", "Uruchom ponownie"} default button 2 with title "PodpisGOV-x64" with icon caution)' 2>/dev/null)
+    ANS=\$(osascript -e 'button returned of (display dialog "Poprawiono wystawcę e-dowodu w ustawieniach Podpis GOV (ścieżka z „ó” albo wystawca usunięty po błędzie Podpis GOV).\n\nŻeby certyfikaty i podpis działały, Podpis GOV musi zostać uruchomiony ponownie." buttons {"Później", "Uruchom ponownie"} default button 2 with title "PodpisGOV-x64" with icon caution)' 2>/dev/null)
     if [[ "\$ANS" == "Uruchom ponownie" ]]; then
       pkill -f 'pl.gov.coi.signer.Main'
       for i in {1..20}; do curl -sk -m 1 https://127.0.0.1:8640/rest/version >/dev/null 2>&1 || break; sleep 0.5; done
