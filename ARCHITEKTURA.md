@@ -82,6 +82,16 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
    `PodpisGOV-x64` ponownie, gdy aplikacja już działa.
 3. **Strona gov.pl** łączy się z Podpis GOV przez `https://localhost:8640` i prosi o podpis.
 
+### Podpisanie pliku: dwie alternatywy
+
+| | Program | Gdzie | Uwagi |
+|---|---|---|---|
+| **A** | **e-dowód Podpis elektroniczny** (PWPW) | lokalnie, bez przeglądarki | podpis osobisty lub kwalifikowany; działa bez tego obejścia |
+| **B** | **[podpis.gov.pl](https://podpis.gov.pl)** + Podpis GOV (COI) | w przeglądarce | wgrywasz plik, strona woła Podpis GOV; na Apple Silicon przez to obejście |
+
+Inne e-usługi gov.pl (formularze, wnioski) wywołują Podpis GOV tak samo jak B, przez lokalne API
+(`/rest/certificates`, `/rest/sign`), ale to usługa decyduje, co i kiedy jest podpisywane.
+
 ## Gdzie działa nasze obejście
 
 Obejście z tego repozytorium dotyczy wyłącznie kroku 2. Oprócz uruchamiania Podpis GOV na Javie x64 launcher
