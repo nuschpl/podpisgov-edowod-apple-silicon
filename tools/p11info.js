@@ -12,15 +12,21 @@ for (var i = 0; i < slots.length; i++) {
   var fl = [];
   for (var k in F) if (t.flags & F[k]) fl.push(k);
   print("\nslot " + slots[i] + ": " + s(t.label));
-  print("  PIN: min " + t.ulMinPinLen + ", max " + t.ulMaxPinLen + "   flagi: " + fl.join(", "));
+  print("  PIN: " + ((t.flags & 0x4) ? (t.ulMinPinLen == t.ulMaxPinLen ? t.ulMinPinLen + " cyfr" : t.ulMinPinLen + "–" + t.ulMaxPinLen + " cyfr") : "nie wymaga") + "   flagi: " + fl.join(", "));
   var h = p.C_OpenSession(slots[i], C.CKF_SERIAL_SESSION, null, null);
   var tpl = [new W.CK_ATTRIBUTE(C.CKA_CLASS, C.CKO_CERTIFICATE)];
   p.C_FindObjectsInit(h, tpl); var objs = p.C_FindObjects(h, 20); p.C_FindObjectsFinal(h);
   for (var j = 0; j < objs.length; j++) {
-    var at = [new W.CK_ATTRIBUTE(C.CKA_LABEL), new W.CK_ATTRIBUTE(C.CKA_VALUE)];
-    p.C_GetAttributeValue(h, objs[j], at);
-    var cert = java.security.cert.CertificateFactory.getInstance("X.509").generateCertificate(new java.io.ByteArrayInputStream(at[1].getByteArray()));
-    print("  cert: " + (at[0].pValue ? s(at[0].getCharArray()) : "?") + " | wystawca: " + cert.getIssuerX500Principal().getName().replace(/.*CN=([^,]+).*/, "$1") + " | ważny do " + cert.getNotAfter());
+    try {
+      var at = [new W.CK_ATTRIBUTE(C.CKA_LABEL), new W.CK_ATTRIBUTE(C.CKA_VALUE)];
+      p.C_GetAttributeValue(h, objs[j], at);
+      var lbl = at[0].pValue ? s(at[0].getCharArray()) : "?";
+      var v = at[1].pValue;
+      if (v instanceof Java.type("byte[]")) {
+        var cert = java.security.cert.CertificateFactory.getInstance("X.509").generateCertificate(new java.io.ByteArrayInputStream(v));
+        print("  cert: " + lbl + " | wystawca: " + cert.getIssuerX500Principal().getName().replace(/.*CN=([^,]+).*/, "$1") + " | ważny do " + cert.getNotAfter());
+      } else print("  cert: " + lbl + " (treść niedostępna bez logowania)");
+    } catch (e) { print("  cert #" + j + ": nie odczytano (" + e.getMessage() + ")"); }
   }
   if (objs.length == 0) print("  (brak publicznych certyfikatów)");
   p.C_CloseSession(h);

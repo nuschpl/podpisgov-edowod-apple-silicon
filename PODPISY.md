@@ -50,6 +50,12 @@ W kopercie i w urzędzie spotkasz kilka kodów. Łatwo je pomylić:
 | **PUK** | 8 cyfr | **Odblokowanie** PIN1 i PIN2 po 3 błędnych próbach | W **kopercie** wydanej razem z dowodem |
 | **PIN do podpisu kwalifikowanego** | 8 cyfr | **Podpis kwalifikowany** | Ustalasz przy aktywacji kupionego certyfikatu |
 
+> [!TIP]
+> Długości PIN-ów potwierdziła sama karta (e-dowód, oprogramowanie PWPW 4.3.4.28): token *Authentication*
+> wymaga **4 cyfr** (PIN1), *Authorization* (podpis osobisty) **6 cyfr** (PIN2), a *Qualified*
+> (podpis kwalifikowany) **8 cyfr**. Sprawdzisz to u siebie bez wpisywania PIN-u, uruchamiając
+> `tools/test-podpisow.sh` (krok 1).
+
 **Ważne o PIN1 i PIN2:** ustalasz je w urzędzie gminy, najczęściej przy odbiorze dowodu.
 Jeśli wtedy tego nie zrobiłeś, możesz to zrobić **później w dowolnym urzędzie gminy**. Bez tego
 nie zalogujesz się dowodem (PIN1) ani nie złożysz podpisu osobistego (PIN2).
