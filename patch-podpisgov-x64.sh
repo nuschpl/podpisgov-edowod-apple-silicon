@@ -162,6 +162,17 @@ fi
 #    zaproponuj ponowne uruchomienie,
 #  - wersja x64 -> otwórz okno wyboru certyfikatu (lokalne API, jak strona gov.pl).
 RUNNING=\$(curl -sk -m 3 https://127.0.0.1:8640/rest/version 2>/dev/null)
+# Podpis GOV startuje ~15-20 s i dopiero wtedy otwiera port: jeśli proces już jest, poczekaj na niego,
+# zamiast uruchamiać drugą kopię (ta kończy się błędem "Port 8640 is already in use").
+if [[ -z "\$RUNNING" ]] && pgrep -f 'pl.gov.coi.signer.Main' >/dev/null; then
+  for i in {1..60}; do
+    RUNNING=\$(curl -sk -m 2 https://127.0.0.1:8640/rest/version 2>/dev/null)
+    [[ -n "\$RUNNING" ]] && break
+    pgrep -f 'pl.gov.coi.signer.Main' >/dev/null || break
+    sleep 1
+  done
+  [[ -z "\$RUNNING" ]] && pgrep -f 'pl.gov.coi.signer.Main' >/dev/null && exit 0
+fi
 if [[ -n "\$RUNNING" ]]; then
   if [[ "\$RUNNING" != *x86_64* ]]; then
     osascript -e 'display dialog "Działa zwykły Podpis GOV, który nie widzi e-dowodu na tym Macu.\n\nZamknij go (ikona Podpis GOV na górnym pasku → Wyjście) i otwórz ponownie PodpisGOV-x64." buttons {"OK"} default button 1 with title "PodpisGOV-x64" with icon caution' >/dev/null
