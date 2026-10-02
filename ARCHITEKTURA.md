@@ -95,6 +95,11 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
 | **B** | **[podpis.gov.pl](https://podpis.gov.pl)** + Podpis GOV (COI) | w przeglądarce | wgrywasz plik, strona woła Podpis GOV; na Apple Silicon przez to obejście |
 | **C** | **logowanie** na login.gov.pl (np. e-Doręczenia): E-dowód → czytnik NFC | przeglądarka | certyfikat profilu osobistego z PIN1 przez CryptoTokenKit; działa natywnie, bez obejścia |
 
+**Logowanie (C) w praktyce:** po „Zaloguj się” macOS pokazuje ogólne okno *„Firefox próbuje podpisać dane”*
+(albo podobne dla Safari/Chrome). To podpis kluczem z dowodu wymagany do połączenia z certyfikatem klienta.
+**Przy logowaniu to zawsze PIN1 (4 cyfry).** PIN bywa pytany **dwa razy**: usługa nawiązuje więcej niż jedno
+połączenie z certyfikatem, a rozszerzenie CryptoTokenKit PWPW nie zapamiętuje PIN-u między operacjami.
+
 Inne e-usługi gov.pl (formularze, wnioski) wywołują Podpis GOV tak samo jak B, przez lokalne API
 (`/rest/certificates`, `/rest/sign`), ale to usługa decyduje, co i kiedy jest podpisywane.
 
