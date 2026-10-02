@@ -1,6 +1,6 @@
 # Jak podpisać dokument e-dowodem na Macu
 
-[← README](README.md) · [← Instalacja](INSTALL.md) · **Podpisywanie** · [Rodzaje podpisów →](PODPISY.md) · [Architektura](ARCHITEKTURA.md)
+[← README](README.md) · [← Instalacja](INSTALL.md) · **Podpisywanie** · [Rodzaje podpisów →](PODPISY.md) · [Architektura](ARCHITEKTURA.md) · [Odnowione certyfikaty](UWAGA-ODNOWIONE-CERTYFIKATY.md)
 
 Ta instrukcja jest dla osób, które **mają już zainstalowaną poprawkę** (zobacz [Instalacja](INSTALL.md)).
 Nie trzeba tu nic wpisywać w Terminalu.
@@ -127,6 +127,7 @@ w aplikacji **e-dowód Podpis elektroniczny** od PWPW.
 Jeśli Twój certyfikat kwalifikowany na e-dowodzie był **odnawiany**, na karcie zostaje też stary, wygasły certyfikat,
 a Podpis GOV myli je przy podpisie. PIN nie jest przy tym blokowany. Podpis kwalifikowany złożysz w aplikacji
 **e-dowód Podpis elektroniczny** od PWPW. Podpis osobisty przez gov.pl działa normalnie.
+Wyjaśnienie: [Odnowione certyfikaty](UWAGA-ODNOWIONE-CERTYFIKATY.md).
 
 **Okno „Error … Port 8640 is already in use”**
 Uruchomiła się druga kopia Podpis GOV (np. podwójne kliknięcie w trakcie startu). Kliknij **OK**: pierwsza kopia działa

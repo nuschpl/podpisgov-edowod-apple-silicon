@@ -107,6 +107,7 @@ Na Macach z Apple Silicon ta ścieżka nie działa z obu powyższych powodów.
    (SunPKCS11 `KeyStore`) łączy klucz z pierwszym, wygasłym certyfikatem. Kończy się to błędem „Nie znaleziono
    wybranego ceryfikatu”, a strona pokazuje „Wystąpił błąd i dokument nie został podpisany”. PIN jest poprawnie
    przyjmowany i nie jest blokowany. **Obejście:** podpis kwalifikowany w aplikacji „e-dowód Podpis elektroniczny”.
+   Szczegóły: [UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md).
 
 Rozszerzenie CryptoTokenKit z pakietu e-dowód tu nie pomaga: obsługuje Safari, Pęk kluczy
 i Chrome, ale aplikacje w Javie korzystają tylko z PKCS#11.

@@ -1,6 +1,6 @@
 # Architektura: kto rozmawia z e-dowodem
 
-[← README](README.md) · [Instalacja](INSTALL.md) · [Podpisywanie](RUN.md) · [Rodzaje podpisów](PODPISY.md) · **Architektura**
+[← README](README.md) · [Instalacja](INSTALL.md) · [Podpisywanie](RUN.md) · [Rodzaje podpisów](PODPISY.md) · **Architektura** · [Odnowione certyfikaty](UWAGA-ODNOWIONE-CERTYFIKATY.md)
 
 ![Kolejność: aplikacja e-dowód nawiązuje bezpieczne połączenie z kartą, a moduł PKCS#11 w Podpis GOV z niego korzysta](docs/kolejnosc-e-dowod-podpisgov.svg)
 
@@ -54,6 +54,11 @@ Według [gov.pl — Uzyskaj dowód osobisty](https://www.gov.pl/web/gov/uzyskaj-
 Szyfrowany kanał z kartą (**tunel PACE**) zestawia aplikacja e-dowód, a każda nowa sesja wymaga numeru CAN:
 wpisanego ręcznie albo zapamiętanego w aplikacji (opcja „zapamiętaj CAN”). Z praktyki: gdy sesja działa
 niestabilnie, pomaga wyłączenie i ponowne włączenie tej opcji.
+
+> [!WARNING]
+> **Odnowiony certyfikat kwalifikowany:** na karcie zostają dwa certyfikaty na ten sam klucz, a podpis kwalifikowany
+> przez Podpis GOV kończy się błędem. Wyjaśnienie krok po kroku z analogią:
+> **[UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md)**.
 
 ### Kto korzysta z sesji
 
