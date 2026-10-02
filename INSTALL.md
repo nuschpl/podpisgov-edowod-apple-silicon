@@ -1,6 +1,6 @@
 # Instalacja
 
-[← README](README.md) · **Instalacja** · [Podpisywanie →](RUN.md)
+[← README](README.md) · **Instalacja** · [Podpisywanie →](RUN.md) · [Architektura](ARCHITEKTURA.md)
 
 > [!WARNING]
 > To obejście działa dzięki Rosetcie 2, a Apple kończy jej obsługę na macOS 27.

@@ -6,6 +6,10 @@
 Skrypt, dzięki któremu **Podpis GOV** (COI) zaczyna widzieć certyfikaty z **e-dowodu**
 (moduł PKCS#11 od PWPW) na Macach z procesorami Apple Silicon (M1, M2, M3, M4…).
 
+Moduł PKCS#11 od PWPW **nie jest klasycznym modułem**: sam nie łączy się z kartą, tylko korzysta
+z połączenia nawiązanego przez aplikację e-dowód. Dlatego liczy się kolejność. Zobacz
+**[ARCHITEKTURA.md](ARCHITEKTURA.md)** (z diagramem).
+
 > [!WARNING]
 > **To obejście ma termin ważności: działa najdłużej do macOS 27.**
 > Działa wyłącznie dzięki **Rosetcie 2**, czyli tłumaczowi kodu Intel (x86_64) wbudowanemu
@@ -103,6 +107,9 @@ skryptu, aktualizacja i odinstalowanie.
 
 ✍️ **[RUN.md — jak podpisać dokument](RUN.md)**: instrukcja krok po kroku dla osób
 nietechnicznych, bez Terminala, z rozwiązywaniem problemów.
+
+🧩 **[ARCHITEKTURA.md — kto rozmawia z e-dowodem](ARCHITEKTURA.md)**: aplikacja e-dowód, moduł PKCS#11,
+CryptoTokenKit i Podpis GOV na jednym diagramie oraz właściwa kolejność.
 
 ⚖️ **[PODPISY.md — jaki podpis wybrać?](PODPISY.md)**: podpis zaufany, osobisty i kwalifikowany
 oraz kody CAN, PIN1, PIN2 i PUK, wyjaśnione bez żargonu.

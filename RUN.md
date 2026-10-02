@@ -1,6 +1,6 @@
 # Jak podpisać dokument e-dowodem na Macu
 
-[← README](README.md) · [← Instalacja](INSTALL.md) · **Podpisywanie** · [Rodzaje podpisów →](PODPISY.md)
+[← README](README.md) · [← Instalacja](INSTALL.md) · **Podpisywanie** · [Rodzaje podpisów →](PODPISY.md) · [Architektura](ARCHITEKTURA.md)
 
 Ta instrukcja jest dla osób, które **mają już zainstalowaną poprawkę** (zobacz [Instalacja](INSTALL.md)).
 Nie trzeba tu nic wpisywać w Terminalu.
