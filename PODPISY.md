@@ -1,6 +1,6 @@
 # Jaki podpis wybrać? Proste porównanie
 
-[← README](README.md) · [Instalacja](INSTALL.md) · [Podpisywanie](RUN.md) · **Rodzaje podpisów**
+[← README](README.md) · [Instalacja](INSTALL.md) · [Podpisywanie](RUN.md) · **Rodzaje podpisów** · [Architektura](ARCHITEKTURA.md)
 
 Ta strona jest dla osób, które nie są ani prawnikami, ani informatykami. Wyjaśnia, czym różnią się
 podpisy, które możesz złożyć e-dowodem lub przez gov.pl, i **kiedy który wystarczy**.
