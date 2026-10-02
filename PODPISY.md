@@ -60,6 +60,10 @@ W kopercie i w urzędzie spotkasz kilka kodów. Łatwo je pomylić:
 Jeśli wtedy tego nie zrobiłeś, możesz to zrobić **później w dowolnym urzędzie gminy**. Bez tego
 nie zalogujesz się dowodem (PIN1) ani nie złożysz podpisu osobistego (PIN2).
 
+Kodu PUK nie musisz odbierać od razu: czeka w urzędzie, który wydał dowód. Gdy dowód odbiera pełnomocnik,
+po PIN-y i PUK trzeba i tak przyjść **osobiście**
+([gov.pl](https://www.gov.pl/web/gov/uzyskaj-dowod-osobisty)).
+
 **Schowaj kopertę z kodem PUK.** Trzy błędne próby PIN-u blokują certyfikat, a PUK pozwala go
 odblokować bez wizyty w urzędzie, np. w aplikacji mObywatel. Nikomu nie podawaj PIN-ów ani PUK-u.
 
