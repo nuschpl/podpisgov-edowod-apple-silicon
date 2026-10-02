@@ -136,6 +136,17 @@ ok "Dowiązanie do modułu: $LIB_LINK"
 cat > "$LAUNCHER" <<EOF
 #!/bin/zsh
 # Podpis GOV na Javie 8 x86_64 (Rosetta), aby mógł załadować moduł PKCS#11 e-dowodu od PWPW (x86_64).
+# Jeśli Podpis GOV już działa: wersja x64 -> otwórz okno wyboru certyfikatu (tam jest "Dodaj wystawcę"),
+# wersja arm64 -> poproś o jej zamknięcie (nie widzi e-dowodu).
+RUNNING=\$(curl -sk -m 3 https://127.0.0.1:8640/rest/version 2>/dev/null)
+if [[ -n "\$RUNNING" ]]; then
+  if [[ "\$RUNNING" == *x86_64* ]]; then
+    curl -sk -m 900 -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null 2>&1 &!
+  else
+    osascript -e 'display dialog "Działa zwykły Podpis GOV, który nie widzi e-dowodu na tym Macu.\n\nZamknij go (ikona Podpis GOV na górnym pasku → Wyjście) i otwórz ponownie PodpisGOV-x64." buttons {"OK"} default button 1 with title "PodpisGOV-x64" with icon caution' >/dev/null
+  fi
+  exit 0
+fi
 APP=$PODPISGOV/Contents
 JAR=\$(ls "\$APP/Resources/Java"/podpisgov-*-runnable.jar | sort -V | tail -1)
 cd "\$APP/Resources" || exit 1
@@ -161,6 +172,7 @@ cat <<EOF
 Gotowe. Dalsze kroki:
   1. Zamknij zwykły Podpis GOV (nie uruchamiaj obu wersji jednocześnie).
   2. Otwórz  $APP   (możesz przeciągnąć ją do Docka).
+     Gdy Podpis GOV już działa, ponowne kliknięcie otwiera okno wyboru certyfikatu.
   3. "Dodaj wystawcę z dysku" -> wskaż ten plik (w oknie wyboru Cmd+Shift+G i wklej ścieżkę):
        $LIB_LINK
   4. Połóż e-dowód na czytniku i przy podpisywaniu podaj PIN.
