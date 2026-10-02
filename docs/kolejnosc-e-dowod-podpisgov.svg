@@ -24,7 +24,7 @@
 
 <!-- tunel PACE: dowód → czytnik → aplikacja e-dowód -->
 <path class="tun" d="M150,240 L150,282 L190,282 C225,282 215,170 250,165 L250,215 C230,215 238,330 190,330 L150,330 L150,352 L70,352 L70,240 z"/>
-<text x="200" y="262" class="acct h" font-size="11" transform="rotate(-62 200 262)">tunel PACE · CAN</text>
+<text x="200" y="262" class="acct h" font-size="11" transform="rotate(-62 200 262)">tunel PACE (6 cyfr CAN)</text>
 
 <!-- karta i czytnik -->
 <rect class="box" x="30" y="92" width="160" height="150" rx="10"/>
