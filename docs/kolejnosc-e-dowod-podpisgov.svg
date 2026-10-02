@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 980 710" width="980" height="710" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-<title>Dwie drogi podpisania pliku e-dowodem na Macu. Tunel PACE (CAN) zestawia aplikacja e-dowód; z sesji korzystają e-dowód Podpis elektroniczny i moduł PKCS#11 w Podpis GOV</title>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 980 730" width="980" height="730" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title>E-dowód na Macu: trzy drogi (podpis w aplikacji PWPW, podpis.gov.pl + Podpis GOV, logowanie przez CryptoTokenKit). Tunel PACE (CAN) zestawia aplikacja e-dowód; z sesji korzystają e-dowód Podpis elektroniczny i moduł PKCS#11 w Podpis GOV</title>
 <style>
   .bg{fill:#ffffff} .box{fill:#f6f8fa;stroke:#d0d7de;stroke-width:1.5} .inner{fill:#ffffff;stroke:#8c959f;stroke-width:1.2}
   .t{fill:#1f2328} .m{fill:#59636e} .h{font-weight:600} .ln{stroke:#59636e;stroke-width:2;fill:none}
@@ -18,7 +18,7 @@
   <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="m"/></marker>
   <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="acct"/></marker>
 </defs>
-<rect class="bg" width="980" height="710" rx="12"/>
+<rect class="bg" width="980" height="730" rx="12"/>
 <text x="30" y="40" class="t h" font-size="20">Kto rozmawia z e-dowodem? Kolejność ma znaczenie</text>
 <text x="30" y="64" class="m" font-size="13">Tunel PACE (CAN) zestawia aplikacja e-dowód. Inne programy korzystają z tej sesji przez moduł PKCS#11 od PWPW.</text>
 
@@ -66,10 +66,12 @@
 <line class="ln acc" x1="410" y1="254" x2="410" y2="284" marker-end="url(#g)"/>
 
 <!-- CTK -->
-<rect class="box" x="250" y="390" width="320" height="62" rx="10"/>
-<text x="266" y="416" class="t h" font-size="13">rozszerzenie CryptoTokenKit (PWPW)</text>
-<text x="266" y="436" class="m" font-size="12">Safari · Pęk kluczy · Chrome</text>
-<line class="ln" x1="330" y1="346" x2="330" y2="386" stroke-dasharray="4 4" marker-end="url(#a)"/>
+<rect class="box" x="250" y="382" width="320" height="86" rx="10"/>
+<text x="266" y="404" class="t h" font-size="13">rozszerzenie CryptoTokenKit (PWPW)</text>
+<text x="266" y="422" class="m" font-size="12">Firefox · Safari · Chrome · Pęk kluczy — natywnie arm64</text>
+<text x="266" y="442" class="acct h" font-size="11">C · logowanie: login.gov.pl → E-dowód → czytnik NFC</text>
+<text x="266" y="458" class="m" font-size="11">certyfikat profilu osobistego, PIN1 (4 cyfry)</text>
+<line class="ln" x1="330" y1="346" x2="330" y2="378" stroke-dasharray="4 4" marker-end="url(#a)"/>
 
 <!-- 2a: e-dowód Podpis elektroniczny -->
 <rect class="box" x="610" y="92" width="340" height="96" rx="10"/>
@@ -119,9 +121,10 @@
 <text x="46" y="548" class="t" font-size="12">→ CKR_TOKEN_NOT_PRESENT → „Nie znaleziono certyfikatów”</text>
 <text x="46" y="574" class="m" font-size="12">Rozwiązanie: poczekaj na komunikat aplikacji e-dowód (krok 1),</text>
 <text x="46" y="590" class="m" font-size="12">potem uruchom program podpisujący (krok 2).</text>
-<rect class="box" x="30" y="608" width="540" height="72" rx="10"/>
-<text x="46" y="632" class="t h" font-size="13">Podpisanie pliku e-dowodem — dwie alternatywy</text>
-<text x="46" y="652" class="acct" font-size="12">A · aplikacja „e-dowód Podpis elektroniczny” (PWPW) — lokalnie, bez przeglądarki</text>
+<rect class="box" x="30" y="608" width="540" height="92" rx="10"/>
+<text x="46" y="632" class="t h" font-size="13">E-dowód na Macu — trzy drogi</text>
+<text x="46" y="652" class="acct" font-size="12">A · podpis pliku: aplikacja „e-dowód Podpis elektroniczny” (PWPW), lokalnie</text>
 <text x="46" y="670" class="acct" font-size="12">B · podpis.gov.pl + Podpis GOV (COI) — w przeglądarce, przez to obejście</text>
-<text x="950" y="696" text-anchor="end" class="m" font-size="10">Ikony: PWPW S.A. (e-dowód, e-dowód Podpis elektroniczny), COI (Podpis GOV) — wyłącznie do identyfikacji aplikacji.</text>
+<text x="46" y="688" class="acct" font-size="12">C · logowanie na login.gov.pl (np. e-Doręczenia) — CryptoTokenKit, PIN1</text>
+<text x="950" y="718" text-anchor="end" class="m" font-size="10">Ikony: PWPW S.A. (e-dowód, e-dowód Podpis elektroniczny), COI (Podpis GOV) — wyłącznie do identyfikacji aplikacji.</text>
 </svg>
