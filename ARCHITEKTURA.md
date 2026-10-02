@@ -91,9 +91,11 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
 
 | | Program | Gdzie | Uwagi |
 |---|---|---|---|
-| **A** | **e-dowód Podpis elektroniczny** (PWPW) | lokalnie, bez przeglądarki | podpis osobisty lub kwalifikowany; działa bez tego obejścia |
+| **A** | **e-dowód Podpis elektroniczny** (PWPW) | lokalnie, bez przeglądarki | podpis osobisty lub kwalifikowany; działa bez tego obejścia. Nie ma łącza z WWW: żadna aplikacja PWPW nie nasłuchuje na porcie sieciowym (sprawdzone 2026-10-02) |
 | **B** | **[podpis.gov.pl](https://podpis.gov.pl)** + Podpis GOV (COI) | w przeglądarce | wgrywasz plik, strona woła Podpis GOV; na Apple Silicon przez to obejście |
-| **C** | **logowanie** na login.gov.pl (np. e-Doręczenia): E-dowód → czytnik NFC | przeglądarka | certyfikat profilu osobistego z PIN1 przez CryptoTokenKit; działa natywnie, bez obejścia |
+| **C** | **logowanie** na login.gov.pl (np. e-Doręczenia): E-dowód → czytnik NFC | przeglądarka | uwierzytelnienie TLS certyfikatem klienta (profil osobisty, PIN1) przez CryptoTokenKit; działa natywnie, bez obejścia i **bez Podpis GOV** (sprawdzone przy zamkniętym Podpis GOV, 2026-10-02) |
+
+**Dwa łączniki karty z WWW.** Droga A (strzałka z sesji do „e-dowód Podpis elektroniczny”) działa wyłącznie lokalnie. Z przeglądarką kartę łączą tylko: **B** — Podpis GOV (COI) przez lokalne API na portach 8640/8641, wyłącznie do **podpisu**; **C** — rozszerzenie CryptoTokenKit (PWPW) przez macOS, do **uwierzytelnienia** (TLS z certyfikatem klienta na login.e-dowod.gov.pl). Logowanie e-dowodem nie korzysta więc z Podpis GOV.
 
 **Logowanie (C) w praktyce:** po „Zaloguj się” macOS pokazuje ogólne okno *„Firefox próbuje podpisać dane”*
 (albo podobne dla Safari/Chrome). To podpis kluczem z dowodu wymagany do połączenia z certyfikatem klienta.
