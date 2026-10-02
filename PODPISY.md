@@ -71,7 +71,13 @@ odblokować bez wizyty w urzędzie, np. w aplikacji mObywatel. Nikomu nie podawa
 
 Certyfikat kwalifikowany do e-dowodu sprzedaje **PWPW** przez swoje centrum usług zaufania
 **[Sigillum](https://sigillum.pl/)**. Po zakupie i aktywacji certyfikat trafia do warstwy
-elektronicznej Twojego dowodu. Podpisujesz nim:
+elektronicznej Twojego dowodu. **Do aktywacji potrzebny jest kod PUK** z koperty odebranej w urzędzie
+razem z dowodem, więc nie wyrzucaj jej.
+
+> [!NOTE]
+> Niepotwierdzone: czy przy starszych dowodach trzeba było zaznaczyć tę możliwość we wniosku o dowód
+> (wiadomo na pewno, że takie pole jest dla **podpisu osobistego**) i jak to wygląda w nowszych wersjach e-dowodu.
+> Przed zakupem zapytaj w [Sigillum](https://sigillum.pl/). Podpisujesz nim:
 - na komputerze: przez program **e-dowód** od PWPW, czytnik NFC i aplikację podpisującą
   (np. Podpis GOV, na Macu z Apple Silicon razem z [tą poprawką](INSTALL.md)),
 - na telefonie: przez aplikację **[eDO App](https://www.gov.pl/web/e-dowod)** od PWPW.
