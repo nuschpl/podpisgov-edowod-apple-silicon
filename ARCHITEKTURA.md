@@ -17,13 +17,16 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
 2. **Moduł korzysta z gotowej sesji.** Gdy aplikacja e-dowód zakończy odczyt, moduł pokazuje
    **5 wirtualnych slotów**, po jednym na każdą funkcję dowodu:
 
-   | Slot | Token | PIN |
-   |---|---|---|
-   | 0 | E-Dowód (Authentication) | 4 cyfry (PIN1) |
-   | 1 | E-Dowód (Presence) | brak |
-   | 2 | E-Dowód (Authorization): podpis osobisty | 6 cyfr (PIN2) |
-   | 3 | E-Dowód (Qualified): podpis kwalifikowany, jeśli kupiony | 8 cyfr |
-   | 4 | eMRTD (dane paszportowe) | brak (CAN) |
+   | Slot | Token (nazwa w module) | Nazwa urzędowa | PIN |
+   |---|---|---|---|
+   | 0 | E-Dowód (Authentication) | **profil osobisty**: certyfikat identyfikacji i uwierzytelnienia (logowanie e-dowodem) | 4 cyfry (PIN1) |
+   | 1 | E-Dowód (Presence) | **potwierdzenie obecności**: certyfikat potwierdzenia obecności | brak |
+   | 2 | E-Dowód (Authorization) | **podpis osobisty**: certyfikat podpisu osobistego | 6 cyfr (PIN2) |
+   | 3 | E-Dowód (Qualified) | **podpis kwalifikowany**: certyfikat kwalifikowany, opcjonalny, kupowany u PWPW (Sigillum) | 8 cyfr |
+   | 4 | eMRTD | **dokument podróży**: dane do kontroli granicznej (ICAO), np. zdjęcie | brak (dostęp przez CAN) |
+
+   > **Podpis zaufany nie jest na dowodzie.** Działa przez Profil Zaufany online (bank, SMS, mObywatel)
+   > i nie korzysta z karty ani z tego modułu. Porównanie wszystkich podpisów: [PODPISY.md](PODPISY.md).
 
 3. **Bez tej sesji moduł widzi tylko czytnik.** Zwraca wtedy 1 slot i `CKR_TOKEN_NOT_PRESENT`, mimo że
    dowód leży na czytniku. Czytnik tylko krótko mrugnie (ok. 2 s, odczyt ATR) i nic więcej się nie dzieje.
