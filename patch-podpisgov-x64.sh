@@ -159,8 +159,13 @@ chmod +x "$LAUNCHER"
 mkdir -p "${APP:h}"
 rm -rf "$APP"
 osacompile -o "$APP" -e "do shell script \"/usr/bin/nohup /bin/zsh \" & quoted form of \"$LAUNCHER\" & \" >/dev/null 2>&1 &\"" 2>/dev/null
+# ikona Podpis GOV: nowy osacompile trzyma ikonę w Assets.car (CFBundleIconName), która ma pierwszeństwo
 cp "$PODPISGOV/Contents/Resources/PodpisGOV.icns" "$APP/Contents/Resources/applet.icns" 2>/dev/null || true
+rm -f "$APP/Contents/Resources/Assets.car"
+/usr/libexec/PlistBuddy -c "Delete :CFBundleIconName" "$APP/Contents/Info.plist" 2>/dev/null || true
+codesign --force --sign - "$APP" 2>/dev/null || true   # ponowny podpis lokalny (ad hoc) po zmianie zasobów
 touch "$APP"
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$APP" 2>/dev/null || true
 ok "Aplikacja uruchamiająca: $APP"
 
 # ---------------------------------------------------------------- autotest
