@@ -141,7 +141,7 @@ cat > "$LAUNCHER" <<EOF
 RUNNING=\$(curl -sk -m 3 https://127.0.0.1:8640/rest/version 2>/dev/null)
 if [[ -n "\$RUNNING" ]]; then
   if [[ "\$RUNNING" == *x86_64* ]]; then
-    curl -sk -m 900 -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null 2>&1 &!
+    nohup curl -sk -m 900 -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null 2>&1 &!
   else
     osascript -e 'display dialog "Działa zwykły Podpis GOV, który nie widzi e-dowodu na tym Macu.\n\nZamknij go (ikona Podpis GOV na górnym pasku → Wyjście) i otwórz ponownie PodpisGOV-x64." buttons {"OK"} default button 1 with title "PodpisGOV-x64" with icon caution' >/dev/null
   fi
@@ -158,7 +158,7 @@ chmod +x "$LAUNCHER"
 
 mkdir -p "${APP:h}"
 rm -rf "$APP"
-osacompile -o "$APP" -e "do shell script quoted form of \"$LAUNCHER\" & \" >/dev/null 2>&1 &\"" 2>/dev/null
+osacompile -o "$APP" -e "do shell script \"/usr/bin/nohup /bin/zsh \" & quoted form of \"$LAUNCHER\" & \" >/dev/null 2>&1 &\"" 2>/dev/null
 cp "$PODPISGOV/Contents/Resources/PodpisGOV.icns" "$APP/Contents/Resources/applet.icns" 2>/dev/null || true
 touch "$APP"
 ok "Aplikacja uruchamiająca: $APP"
