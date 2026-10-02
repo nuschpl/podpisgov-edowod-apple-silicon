@@ -43,13 +43,15 @@ niestabilnie, pomaga wyłączenie i ponowne włączenie tej opcji.
 | Program | Dostawca | Jak sięga do karty | Wynik na Apple Silicon |
 |---|---|---|---|
 | **e-dowód Podpis elektroniczny** (eDOSign) | PWPW | moduł PKCS#11 przez własny wrapper IAIK z własną biblioteką natywną | ✅ widzi certyfikaty, podpisuje (podpis osobisty, kwalifikowany) |
-| **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11 przez wrapper natywny Javy 8 (`xipki sunpkcs11-wrapper`) | ⚠️ widzi 5 slotów, ale certyfikaty są puste, więc „Nie znaleziono certyfikatów” (w analizie) |
+| **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11 przez wrapper Javy 8 (`xipki sunpkcs11-wrapper`, API IAIK) | ✅ czyta certyfikaty (sprawdzone kodem Podpis GOV); ⚠️ pojedyncze „Nie znaleziono certyfikatów” przy równoczesnym dostępie do karty |
 | Safari, Pęk kluczy, Chrome | Apple / PWPW | rozszerzenie CryptoTokenKit | nie testowano |
 
-**Stan analizy (2026-10-02).** Moduł PWPW zwraca poprawne certyfikaty (876–1731 bajtów), gdy woła się go
-bezpośrednio: z Pythona, przez JNA w tej samej Javie i przez tablicę funkcji `C_GetFunctionList` (PKCS#11 3.0).
-Puste wartości (`null`) pojawiają się wyłącznie przy odczycie przez natywny wrapper PKCS#11 Javy 8
-(`libj2pkcs11`), na którym opiera się Podpis GOV. Przyczyna jest jeszcze nieznana.
+**Wynik analizy (2026-10-02).** Moduł PWPW zwraca poprawne certyfikaty każdą drogą: bezpośrednio, przez
+wrapper Javy 8 i Javy 21 oraz przez kod Podpis GOV (`PKCS11TokenUtils.getPKCS11Token`), także ze ścieżką
+zawierającą „ó”. Pojedynczy błąd „Wystąpił błąd ładowania biblioteki: null” wystąpił, gdy kilka komponentów
+naraz korzystało z karty. Podpis GOV nie sprawdza wtedy, czy odczytany certyfikat nie jest pusty
+(`getByteArrayValue()` → `null` → `NullPointerException`). Narzędzia: `tools/p11proxy/` (logujący moduł
+pośredniczący PKCS#11) i `tools/P11Values.java`.
 
 Do tej samej karty sięga też **rozszerzenie CryptoTokenKit** od PWPW, czyli systemowy dostęp macOS dla
 Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z jednej karty i jednego wolnego
