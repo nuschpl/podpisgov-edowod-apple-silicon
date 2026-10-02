@@ -60,7 +60,7 @@ niestabilnie, pomaga wyłączenie i ponowne włączenie tej opcji.
 | Program | Dostawca | Jak sięga do karty | Wynik na Apple Silicon |
 |---|---|---|---|
 | **e-dowód Podpis elektroniczny** (eDOSign) | PWPW | moduł PKCS#11 przez własny wrapper IAIK z własną biblioteką natywną | ✅ widzi certyfikaty, podpisuje (podpis osobisty, kwalifikowany) |
-| **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11 przez wrapper Javy 8 (`xipki sunpkcs11-wrapper`, API IAIK) | ✅ **widzi certyfikat kwalifikowany** w oknie wyboru (sprawdzone 2026-10-02); przy równoczesnym dostępie do karty bywa „Nie znaleziono certyfikatów”, wtedy ponów |
+| **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11: lista certyfikatów przez API IAIK, podpis przez SunPKCS11 | ✅ **podpis osobisty złożony na podpis.gov.pl**; widzi też certyfikat kwalifikowany (2026-10-02) |
 | Safari, Pęk kluczy, Chrome | Apple / PWPW | rozszerzenie CryptoTokenKit | nie testowano |
 
 **Wynik analizy (2026-10-02).** Moduł PWPW zwraca poprawne certyfikaty każdą drogą: bezpośrednio, przez
