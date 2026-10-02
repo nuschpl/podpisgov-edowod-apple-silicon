@@ -7,13 +7,18 @@ Skrypt, dzięki któremu **Podpis GOV** (COI) zaczyna widzieć certyfikaty z **e
 (moduł PKCS#11 od PWPW) na Macach z procesorami Apple Silicon (M1, M2, M3, M4…).
 
 > [!WARNING]
-> **To obejście ma termin ważności: macOS 27.**
+> **To obejście ma termin ważności: działa najdłużej do macOS 27.**
 > Działa wyłącznie dzięki **Rosetcie 2**, czyli tłumaczowi kodu Intel (x86_64) wbudowanemu
-> w macOS. Apple zapowiedziało, że **macOS 27 będzie ostatnią wersją z pełną Rosettą 2**.
-> W kolejnych wersjach zostanie tylko ograniczony zakres, przeznaczony głównie dla starszych gier.
-> Jeśli PWPW do tego czasu nie wyda modułu PKCS#11 w wersji **arm64 (Apple Silicon)**,
-> e-dowód **przestanie działać na Macach** — w Podpis GOV, w aplikacjach PWPW i w każdym innym
-> programie korzystającym z PKCS#11.
+> w macOS. Apple oficjalnie ogłosiło, że **macOS 27 (wydany we wrześniu 2026) jest ostatnią
+> wersją obsługującą Rosettę** i że po nim aplikacje tylko dla Intela przestaną działać na Macach
+> z Apple Silicon. Zostanie jedynie wsparcie dla starszych, nierozwijanych gier
+> ([Apple Developer, 1 września 2026](https://developer.apple.com/news/?id=w5ngl9k2);
+> [Apple Support: aplikacje Intel na Macach z Apple Silicon](https://support.apple.com/en-us/102527)).
+> Od macOS 26.4 system może już wyświetlać ostrzeżenia przy uruchamianiu takich aplikacji.
+>
+> Jeśli PWPW nie wyda modułu PKCS#11 w wersji **arm64 (Apple Silicon)** przed kolejną wersją
+> macOS, e-dowód **przestanie działać na Macach** — w Podpis GOV, w aplikacjach PWPW i w każdym
+> innym programie korzystającym z PKCS#11.
 
 > [!NOTE]
 > **COI może pomóc tylko częściowo.** Podpis GOV mógłby np. dołączać Javę x64 albo uruchamiać
@@ -130,8 +135,8 @@ Skrypt można uruchamiać wielokrotnie: każde kolejne uruchomienie naprawia ins
 ### Ograniczenia
 
 - **Rozwiązanie zależy od Rosetty 2 i przestanie działać po macOS 27**
-  (szczegóły w ostrzeżeniu na górze strony). Przed aktualizacją do macOS 28 sprawdź, czy PWPW
-  wydało moduł arm64 — skrypt sam to wykrywa i ostrzega.
+  (szczegóły i źródła w ostrzeżeniu na górze strony). Przed aktualizacją do następnej wersji
+  macOS sprawdź, czy PWPW wydało moduł arm64 — skrypt sam to wykrywa i ostrzega.
 - Java x64 instalowana przez skrypt nie aktualizuje się sama. Aby ją odświeżyć, uruchom skrypt
   ponownie po jego aktualizacji.
 - Jeśli strona internetowa sama uruchamia Podpis GOV, może wystartować wersja arm64. Zamknij ją
@@ -147,6 +152,9 @@ Najlepiej, żeby dotyczyło to całego pakietu e-dowód i aplikacji „e-dowód 
   nie zadziała z nim żadna natywna aplikacja: Podpis GOV, Firefox, Java, OpenSSL/p11-kit
   ani `pkcs11-tool`.
 - Od 2020 roku Apple sprzedaje Maki z Apple Silicon, a od 2023 roku wyłącznie takie.
+- Apple kończy obsługę Rosetty: [macOS 27 to ostatnia wersja, w której działają aplikacje
+  tylko dla Intela](https://developer.apple.com/news/?id=w5ngl9k2). Bez wersji arm64 moduł
+  PWPW po prostu przestanie się uruchamiać.
 - Koszt jest niewielki: kompilacja z `-arch x86_64 -arch arm64` (lub złączenie przez `lipo`)
   i ten sam podpis Developer ID oraz notaryzacja.
 - Warto przy okazji zainstalować moduł pod ścieżką bez polskich znaków albo udostępnić taki alias.
