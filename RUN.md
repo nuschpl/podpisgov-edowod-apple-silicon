@@ -109,6 +109,9 @@ Gotowe. Strona pokaże podpisany dokument do pobrania.
   curl -sk -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null &
   ```
 
+  `pc=0` otwiera okno w trybie **podpisu kwalifikowanego**, a `pc=1` najpewniej w trybie **podpisu osobistego**
+  (tak wskazuje log aplikacji). Strona gov.pl sama wybiera tryb przy podpisywaniu.
+
 **Strona gov.pl sama otworzyła Podpis GOV i nie widać certyfikatów**
 Strona uruchomiła zwykłą wersję. Zamknij ją, otwórz **PodpisGOV-x64** i odśwież stronę.
 
