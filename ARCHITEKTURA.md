@@ -32,6 +32,25 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    dowód leży na czytniku. Czytnik tylko krótko mrugnie (ok. 2 s, odczyt ATR) i nic więcej się nie dzieje.
    Podpis GOV pokazuje wówczas „Nie znaleziono certyfikatów” bez żadnej wskazówki.
 
+### Tunel PACE i numer CAN
+
+Szyfrowany kanał z kartą (**tunel PACE**) zestawia aplikacja e-dowód, a każda nowa sesja wymaga numeru CAN:
+wpisanego ręcznie albo zapamiętanego w aplikacji (opcja „zapamiętaj CAN”). Z praktyki: gdy sesja działa
+niestabilnie, pomaga wyłączenie i ponowne włączenie tej opcji.
+
+### Kto korzysta z sesji
+
+| Program | Dostawca | Jak sięga do karty | Wynik na Apple Silicon |
+|---|---|---|---|
+| **e-dowód Podpis elektroniczny** (eDOSign) | PWPW | moduł PKCS#11 przez własny wrapper IAIK z własną biblioteką natywną | ✅ widzi certyfikaty, podpisuje (podpis osobisty, kwalifikowany) |
+| **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11 przez wrapper natywny Javy 8 (`xipki sunpkcs11-wrapper`) | ⚠️ widzi 5 slotów, ale certyfikaty są puste, więc „Nie znaleziono certyfikatów” (w analizie) |
+| Safari, Pęk kluczy, Chrome | Apple / PWPW | rozszerzenie CryptoTokenKit | nie testowano |
+
+**Stan analizy (2026-10-02).** Moduł PWPW zwraca poprawne certyfikaty (876–1731 bajtów), gdy woła się go
+bezpośrednio: z Pythona, przez JNA w tej samej Javie i przez tablicę funkcji `C_GetFunctionList` (PKCS#11 3.0).
+Puste wartości (`null`) pojawiają się wyłącznie przy odczycie przez natywny wrapper PKCS#11 Javy 8
+(`libj2pkcs11`), na którym opiera się Podpis GOV. Przyczyna jest jeszcze nieznana.
+
 Do tej samej karty sięga też **rozszerzenie CryptoTokenKit** od PWPW, czyli systemowy dostęp macOS dla
 Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z jednej karty i jednego wolnego
 łącza NFC, więc kolejność ma znaczenie.
