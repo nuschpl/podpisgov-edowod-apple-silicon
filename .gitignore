@@ -1,0 +1,5 @@
+# Lokalne pliki — nie publikować
+NOTES.md
+jre/
+*.tar.gz
+.DS_Store
