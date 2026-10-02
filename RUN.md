@@ -93,6 +93,15 @@ Gotowe. Strona pokaże podpisany dokument do pobrania.
 - Sprawdź, czy dowód leży na czytniku, a czytnik jest podłączony.
 - Upewnij się, że w Kroku 2 wkleiłeś dokładnie podaną ścieżkę.
 
+**Kliknięcie nie otwiera okna Podpis GOV**
+- Klikaj aplikację **PodpisGOV-x64** z folderu *Aplikacje* w katalogu domowym albo jej ikonę przypiętą do Docka.
+  Ikona **działającego** Podpis GOV w Docku wygląda tak samo, ale kliknięcie jej nic nie robi.
+- Zawsze działa też polecenie w Terminalu (gdy Podpis GOV jest uruchomiony):
+
+  ```bash
+  curl -sk -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null &
+  ```
+
 **Strona gov.pl sama otworzyła Podpis GOV i nie widać certyfikatów**
 Strona uruchomiła zwykłą wersję. Zamknij ją, otwórz **PodpisGOV-x64** i odśwież stronę.
 
