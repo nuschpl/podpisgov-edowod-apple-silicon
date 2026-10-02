@@ -17,13 +17,13 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
 2. **Moduł korzysta z gotowej sesji.** Gdy aplikacja e-dowód zakończy odczyt, moduł pokazuje
    **5 wirtualnych slotów**, po jednym na każdą funkcję dowodu:
 
-   | Slot | Token (nazwa w module) | Nazwa urzędowa | PIN |
-   |---|---|---|---|
-   | 0 | E-Dowód (Authentication) | **profil osobisty**: certyfikat identyfikacji i uwierzytelnienia (logowanie e-dowodem) | 4 cyfry (PIN1) |
-   | 1 | E-Dowód (Presence) | **potwierdzenie obecności**: certyfikat potwierdzenia obecności | brak |
-   | 2 | E-Dowód (Authorization) | **podpis osobisty**: certyfikat podpisu osobistego | 6 cyfr (PIN2) |
-   | 3 | E-Dowód (Qualified) | **podpis kwalifikowany**: certyfikat kwalifikowany, opcjonalny, kupowany u PWPW (Sigillum) | 8 cyfr |
-   | 4 | eMRTD | **dokument podróży**: dane do kontroli granicznej (ICAO), np. zdjęcie | brak (dostęp przez CAN) |
+   | Slot | Token (nazwa w module) | Nazwa urzędowa | PIN | PUK |
+   |---|---|---|---|---|
+   | 0 | E-Dowód (Authentication) | **profil osobisty**: certyfikat identyfikacji i uwierzytelnienia (logowanie e-dowodem) | 4 cyfry (PIN1) | **tak**: PUK dowodu (8 cyfr) |
+   | 1 | E-Dowód (Presence) | **potwierdzenie obecności**: certyfikat potwierdzenia obecności | brak | nie dotyczy |
+   | 2 | E-Dowód (Authorization) | **podpis osobisty**: certyfikat podpisu osobistego | 6 cyfr (PIN2) | **tak**: PUK dowodu (8 cyfr) |
+   | 3 | E-Dowód (Qualified) | **podpis kwalifikowany**: certyfikat kwalifikowany, opcjonalny, kupowany u PWPW (Sigillum) | 8 cyfr | do potwierdzenia: PUK dowodu czy osobny od dostawcy certyfikatu |
+   | 4 | eMRTD | **dokument podróży**: dane do kontroli granicznej (ICAO), np. zdjęcie | brak (dostęp przez CAN) | nie dotyczy |
 
    > **Podpis zaufany nie jest na dowodzie.** Działa przez Profil Zaufany online (bank, SMS, mObywatel)
    > i nie korzysta z karty ani z tego modułu. Porównanie wszystkich podpisów: [PODPISY.md](PODPISY.md).
@@ -31,6 +31,17 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
 3. **Bez tej sesji moduł widzi tylko czytnik.** Zwraca wtedy 1 slot i `CKR_TOKEN_NOT_PRESENT`, mimo że
    dowód leży na czytniku. Czytnik tylko krótko mrugnie (ok. 2 s, odczyt ATR) i nic więcej się nie dzieje.
    Podpis GOV pokazuje wówczas „Nie znaleziono certyfikatów” bez żadnej wskazówki.
+
+### Kody PIN i PUK: skąd je mieć
+
+Według [gov.pl — Uzyskaj dowód osobisty](https://www.gov.pl/web/gov/uzyskaj-dowod-osobisty):
+
+- **PIN1 (4 cyfry, logowanie)** i **PIN2 (6 cyfr, podpis osobisty)** ustalasz w urzędzie przy odbiorze dowodu.
+  PIN2 tylko wtedy, gdy we wniosku zaznaczono podpis osobisty. Możesz to też zrobić **później, w dowolnym urzędzie gminy**.
+- **PUK (8 cyfr)** dostajesz w kopercie razem z dowodem. Służy do odblokowania PIN-ów po 3 błędnych próbach i do ich zmiany.
+  Możesz go nie odebrać od razu: **czeka w urzędzie, który wydał dowód**.
+- Gdy dowód odbiera **pełnomocnik**, i tak musisz **osobiście** przyjść do urzędu, żeby ustalić PIN-y lub odebrać PUK.
+- Więcej o zmianie PIN-ów i o PUK: [gov.pl/web/e-dowod](https://www.gov.pl/web/e-dowod).
 
 ### Tunel PACE i numer CAN
 
