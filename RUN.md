@@ -38,7 +38,10 @@ Jeśli zwykły Podpis GOV jest już otwarty, najpierw go zamknij (patrz [Problem
 
 ## Krok 2. Tylko za pierwszym razem: wskaż Podpis GOV, gdzie jest e-dowód
 
-1. W oknie Podpis GOV kliknij **Dodaj nowego wystawcę**, a potem **Dodaj wystawcę z dysku**.
+1. Otwórz okno wyboru certyfikatu. Po uruchomieniu Podpis GOV działa w tle (na górnym pasku widać
+   tylko „java” i ikonę z opcją „Wyjście”), więc **kliknij PodpisGOV-x64 jeszcze raz**: otworzy się okno
+   z listą wystawców. Okno pojawia się też samo, gdy podpisujesz dokument na stronie gov.pl.
+   W tym oknie kliknij **Dodaj nowego wystawcę**, a potem **Dodaj wystawcę z dysku**.
 2. Otworzy się okno wyboru pliku. Naciśnij razem klawisze **⌘ Cmd + ⇧ Shift + G**.
 3. W okienku, które się pojawi, wklej poniższy tekst i naciśnij **Enter**:
 
