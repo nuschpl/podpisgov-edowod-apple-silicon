@@ -22,8 +22,13 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    | 0 | E-Dowód (Authentication) | **profil osobisty**: certyfikat identyfikacji i uwierzytelnienia (logowanie e-dowodem) | 4 cyfry (PIN1) | **tak**: PUK dowodu (8 cyfr) |
    | 1 | E-Dowód (Presence) | **potwierdzenie obecności**: certyfikat potwierdzenia obecności | brak | nie dotyczy |
    | 2 | E-Dowód (Authorization) | **podpis osobisty**: certyfikat podpisu osobistego | 6 cyfr (PIN2) | **tak**: PUK dowodu (8 cyfr) |
-   | 3 | E-Dowód (Qualified) | **podpis kwalifikowany**: certyfikat kwalifikowany, opcjonalny, kupowany u PWPW (Sigillum) | 8 cyfr | do potwierdzenia: PUK dowodu czy osobny od dostawcy certyfikatu |
+   | 3 | E-Dowód (Qualified) | **podpis kwalifikowany**: certyfikat kwalifikowany, opcjonalny, kupowany u PWPW (Sigillum) | 8 cyfr | **tak**: PUK dowodu (8 cyfr), **niezbędny do zakupu i aktywacji** certyfikatu w PWPW¹ |
    | 4 | eMRTD | **dokument podróży**: dane do kontroli granicznej (ICAO), np. zdjęcie | brak (dostęp przez CAN) | nie dotyczy |
+
+   ¹ Z doświadczenia autora: aktywacja certyfikatu kwalifikowanego w PWPW wymaga kodu PUK z koperty odebranej
+   w urzędzie. **Niepotwierdzone:** czy na starszych dowodach trzeba było zaznaczyć tę opcję we wniosku (i czy bez
+   tego potrzebny jest nowy dowód), oraz czy dotyczy to nowszych wersji e-dowodu. Potwierdzone jest tylko pole
+   we wniosku dla **podpisu osobistego**.
 
    > **Podpis zaufany nie jest na dowodzie.** Działa przez Profil Zaufany online (bank, SMS, mObywatel)
    > i nie korzysta z karty ani z tego modułu. Porównanie wszystkich podpisów: [PODPISY.md](PODPISY.md).
