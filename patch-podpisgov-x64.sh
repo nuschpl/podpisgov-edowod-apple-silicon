@@ -7,7 +7,7 @@
 # litery "ó" w ścieżce modułu.
 #
 # Rozwiązanie (nic w /Applications nie jest zmieniane):
-#   1. pobranie Eclipse Temurin 8 JRE dla macOS x64 (stała wersja, weryfikacja SHA-256)
+#   1. pobranie Azul Zulu 8 JRE z JavaFX dla macOS x64 (stała wersja, weryfikacja SHA-256)
 #   2. dowiązanie do modułu PWPW pod ścieżką bez polskich znaków
 #   3. aplikacja uruchamiająca jar Podpis GOV na tej Javie przez Rosettę 2
 #
@@ -22,11 +22,13 @@
 
 set -euo pipefail
 
-JRE_VER=8u504b01
-JRE_DIR_NAME=jdk8u504-b01-jre
-JRE_FILE=OpenJDK8U-jre_x64_mac_hotspot_${JRE_VER}.tar.gz
-JRE_URL=https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u504-b01/$JRE_FILE
-JRE_SHA256=f06abadad0fa97e04866d7229a2baad53261579ab5d44875ffa8846a28f28d86
+# Azul Zulu 8 z JavaFX (Podpis GOV to aplikacja JavaFX; Temurin 8 nie ma JavaFX,
+# a Liberica 8 Full x64 nie zawiera JavaNativeFoundation wymaganego przez AWT).
+JRE_VER=zulu8.96.0.205-ca-fx-jre8.0.504
+JRE_DIR_NAME=${JRE_VER}-macosx_x64
+JRE_FILE=${JRE_DIR_NAME}.tar.gz
+JRE_URL=https://cdn.azul.com/zulu/bin/$JRE_FILE
+JRE_SHA256=549bdafdebb9c149060fe28fdf9bd9cc07f5f10086c40afd41c76006131c9129
 
 PODPISGOV=/Applications/PodpisGOV.app
 EDOWOD_LIB="/Applications/e-dowód.app/Contents/lib/e-dowod-pkcs11-64.dylib"
@@ -60,8 +62,13 @@ print("Moduł: " + String(new java.lang.String(i.manufacturerID)).trim() + ", " 
 var s = p.C_GetSlotList(false), t = p.C_GetSlotList(true);
 print("Czytniki/sloty: " + s.length + ", z kartą: " + t.length);
 for (var k = 0; k < t.length; k++) {
-  var ti = p.C_GetTokenInfo(t[k]);
-  print("  slot " + t[k] + ": " + new java.lang.String(new java.lang.String(ti.label).getBytes("ISO-8859-1"), "UTF-8").trim());
+  try {
+    var ti = p.C_GetTokenInfo(t[k]);
+    print("  slot " + t[k] + ": " + new java.lang.String(new java.lang.String(ti.label).getBytes("ISO-8859-1"), "UTF-8").trim());
+  } catch (e) {
+    if (String(e).indexOf("CKR_TOKEN_NOT_PRESENT") >= 0) { print("  Karta jest na czytniku, ale moduł nie udostępnia jej danych (CKR_TOKEN_NOT_PRESENT). Otwórz aplikację „e-dowód” z folderu Aplikacje, połóż dowód na czytniku i wpisz numer CAN (6 cyfr z przodu dowodu), a potem spróbuj ponownie."); break; }
+    print("  slot " + t[k] + ": błąd " + e);
+  }
 }
 EOF
   arch -x86_64 "$JAVA_HOME_X64/bin/jjs" -J-Dfile.encoding=UTF-8 "$js" -- "$LIB_LINK" 2>&1 | grep -vE '^\s+at ' || true
@@ -102,12 +109,14 @@ ok "Jest: macOS arm64, Rosetta 2, Podpis GOV i moduł e-dowodu od PWPW"
 
 # ---------------------------------------------------------------- Java x64
 mkdir -p "$BASE"
+# starsze wersje skryptu instalowały Javę bez JavaFX, przez co Podpis GOV się nie uruchamiał
+for old in "$BASE"/jdk8u*-jre(N) "$BASE"/jre8u*-full.jre(N); do rm -rf "$old"; warn "Usunięto starą Javę bez JavaFX: ${old:t}"; done
 if [[ -x "$JAVA_HOME_X64/bin/java" ]]; then
   ok "Java x64 jest już zainstalowana"
 else
   if [[ -z "$TARBALL" ]]; then
     TARBALL="$BASE/$JRE_FILE"
-    say "Pobieram Temurin JRE $JRE_VER (x64, ok. 40 MB) z GitHub/Adoptium"
+    say "Pobieram Azul Zulu $JRE_VER (x64, z JavaFX, ok. 95 MB) z cdn.azul.com"
     curl -fL --progress-bar -o "$TARBALL" "$JRE_URL"
   fi
   say "Sprawdzam sumę SHA-256"

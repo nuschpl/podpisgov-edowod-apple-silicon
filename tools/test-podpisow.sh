@@ -7,7 +7,7 @@
 set -u
 HERE="${0:A:h}"
 LIB=/Users/Shared/PodpisGOV-x64/e-dowod-pkcs11-64.dylib
-JJS="$HOME/Library/Application Support/PodpisGOV-x64/jdk8u504-b01-jre/Contents/Home/bin/jjs"
+JJS=$(ls "$HOME/Library/Application Support/PodpisGOV-x64"/zulu8*-macosx_x64/Contents/Home/bin/jjs 2>/dev/null | tail -1)
 [[ -t 0 ]] || { echo "Uruchom ten skrypt bezpośrednio w Terminalu."; exit 1; }
 [[ -x "$JJS" && -e "$LIB" ]] || { echo "Najpierw zainstaluj poprawkę: zsh patch-podpisgov-x64.sh"; exit 1; }
 run() { arch -x86_64 "$JJS" -J-Dfile.encoding=UTF-8 "$@" 2>&1 | grep -vE '^\s+at |^Exception in thread|^Caused by' }

@@ -54,10 +54,12 @@ Jeśli zwykły Podpis GOV jest już otwarty, najpierw go zamknij (patrz [Problem
 
 ## Krok 3. Podpisz dokument
 
-1. Połóż e-dowód na czytniku i **nie zdejmuj go** aż do końca.
+1. Otwórz aplikację **e-dowód** (zwykły folder Aplikacje), połóż e-dowód na czytniku
+   i **nie zdejmuj go** aż do końca. Jeśli aplikacja poprosi o **numer CAN**, wpisz 6 cyfr z przodu dowodu.
+   Bez tego Podpis GOV nie zobaczy certyfikatów.
 2. Przejdź do usługi, w której podpisujesz dokument, np. **podpis osobisty** na gov.pl.
    Strona sama połączy się z otwartym Podpis GOV.
-3. Gdy aplikacja **e-dowód** poprosi o **numer CAN**, przepisz 6 cyfr z przodu dowodu.
+3. Jeśli aplikacja **e-dowód** ponownie poprosi o **numer CAN**, przepisz 6 cyfr z przodu dowodu.
 4. W Podpis GOV kliknij **certyfikat ze swoim imieniem i nazwiskiem** (podpis osobisty),
    a potem **Wybierz certyfikat**. Jeśli masz dokupiony certyfikat kwalifikowany, możesz wybrać ten.
    Nie wiesz, który wybrać? Zobacz [Jaki podpis wybrać?](PODPISY.md)

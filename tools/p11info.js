@@ -7,7 +7,9 @@ var F = {LOGIN_REQUIRED:0x4, PROTECTED_AUTH_PATH:0x100, USER_PIN_INITIALIZED:0x8
 var slots = p.C_GetSlotList(true);
 if (slots.length == 0) print("Brak karty na czytniku — połóż e-dowód na czytniku i spróbuj ponownie.");
 for (var i = 0; i < slots.length; i++) {
-  var t = p.C_GetTokenInfo(slots[i]), fl = [];
+  var t; try { t = p.C_GetTokenInfo(slots[i]); } catch (e) {
+    if (String(e).indexOf("CKR_TOKEN_NOT_PRESENT") >= 0) { print("Karta jest na czytniku, ale moduł nie udostępnia jej danych (CKR_TOKEN_NOT_PRESENT). Otwórz aplikację „e-dowód” z folderu Aplikacje, połóż dowód na czytniku i wpisz numer CAN (6 cyfr z przodu dowodu), a potem spróbuj ponownie."); break; } throw e; }
+  var fl = [];
   for (var k in F) if (t.flags & F[k]) fl.push(k);
   print("\nslot " + slots[i] + ": " + s(t.label));
   print("  PIN: min " + t.ulMinPinLen + ", max " + t.ulMaxPinLen + "   flagi: " + fl.join(", "));
