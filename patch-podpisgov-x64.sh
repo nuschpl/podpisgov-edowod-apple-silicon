@@ -136,28 +136,50 @@ ok "Dowiązanie do modułu: $LIB_LINK"
 cat > "$LAUNCHER" <<EOF
 #!/bin/zsh
 # Podpis GOV na Javie 8 x86_64 (Rosetta), aby mógł załadować moduł PKCS#11 e-dowodu od PWPW (x86_64).
-# Jeśli Podpis GOV już działa: wersja x64 -> otwórz okno wyboru certyfikatu (tam jest "Dodaj wystawcę"),
-# wersja arm64 -> poproś o jej zamknięcie (nie widzi e-dowodu).
-RUNNING=\$(curl -sk -m 3 https://127.0.0.1:8640/rest/version 2>/dev/null)
-if [[ -n "\$RUNNING" ]]; then
-  if [[ "\$RUNNING" == *x86_64* ]]; then
-    nohup curl -sk -m 900 -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null 2>&1 &!
-  else
-    osascript -e 'display dialog "Działa zwykły Podpis GOV, który nie widzi e-dowodu na tym Macu.\n\nZamknij go (ikona Podpis GOV na górnym pasku → Wyjście) i otwórz ponownie PodpisGOV-x64." buttons {"OK"} default button 1 with title "PodpisGOV-x64" with icon caution' >/dev/null
-  fi
-  exit 0
-fi
-# Wystawca e-dowodu w konfiguracji Podpis GOV (~/.pksigner/config.ini):
+
+# 1. Wystawca e-dowodu w konfiguracji Podpis GOV (~/.pksigner/config.ini):
 #  - okno wyboru pliku zapisuje ścieżkę /Applications/e-dowód.app/... (często jako "o\\u0301"), której SunPKCS11
-#    nie otworzy przy PODPISIE ("Library ... does not exist") -> zamieniamy ją na dowiązanie bez polskich znaków,
+#    nie otworzy przy PODPISIE ("Library ... does not exist") -> zamieniamy ją na dowiązanie bez polskich znaków
+#    (tylko wpis modułu PWPW, inni wystawcy bez zmian),
 #  - gdy wystawcy PWPW nie ma, dodajemy go, żeby nie trzeba było klikać "Dodaj wystawcę z dysku".
 CFG="\$HOME/.pksigner/config.ini"
 mkdir -p "\${CFG:h}"; touch "\$CFG"
-perl -pi -e 's{^lib = /Applications/e-dowo.*?d\\.app/Contents/lib/(e-dowod-pkcs11-64\\.dylib)}{lib = $LIB_LINK}' "\$CFG"
+FIXED=0
+if grep -q '^lib = /Applications/e-dowo.*d\.app/Contents/lib/e-dowod-pkcs11-64\.dylib' "\$CFG"; then
+  perl -pi -e 's{^lib = /Applications/e-dowo.*?d\\.app/Contents/lib/(e-dowod-pkcs11-64\\.dylib)}{lib = $LIB_LINK}' "\$CFG"
+  FIXED=1
+fi
 if ! grep -q "^lib = $LIB_LINK" "\$CFG"; then
   N=\$(grep -c '^\\[Tokens/Token' "\$CFG")
   printf '[Tokens/Token%s]\\napi = PKCS_11\\nmanufacturerID = PWPW S.A.\\nslot = 2\\nlib = %s\\n\\n' "\$N" "$LIB_LINK" >> "\$CFG"
 fi
+
+# 2. Podpis GOV już działa?
+#  - wersja arm64 -> poproś o jej zamknięcie (nie widzi e-dowodu),
+#  - wersja x64 i właśnie poprawiliśmy ścieżkę -> Podpis GOV trzyma starą w pamięci i podpis by się nie udał:
+#    zaproponuj ponowne uruchomienie,
+#  - wersja x64 -> otwórz okno wyboru certyfikatu (lokalne API, jak strona gov.pl).
+RUNNING=\$(curl -sk -m 3 https://127.0.0.1:8640/rest/version 2>/dev/null)
+if [[ -n "\$RUNNING" ]]; then
+  if [[ "\$RUNNING" != *x86_64* ]]; then
+    osascript -e 'display dialog "Działa zwykły Podpis GOV, który nie widzi e-dowodu na tym Macu.\n\nZamknij go (ikona Podpis GOV na górnym pasku → Wyjście) i otwórz ponownie PodpisGOV-x64." buttons {"OK"} default button 1 with title "PodpisGOV-x64" with icon caution' >/dev/null
+    exit 0
+  fi
+  if (( FIXED )); then
+    ANS=\$(osascript -e 'button returned of (display dialog "Poprawiono ścieżkę do modułu e-dowodu w ustawieniach Podpis GOV (wystawca dodany ręcznie zawiera „ó”).\n\nŻeby podpis zadziałał, Podpis GOV musi zostać uruchomiony ponownie." buttons {"Później", "Uruchom ponownie"} default button 2 with title "PodpisGOV-x64" with icon caution)' 2>/dev/null)
+    if [[ "\$ANS" == "Uruchom ponownie" ]]; then
+      pkill -f 'pl.gov.coi.signer.Main'
+      for i in {1..20}; do curl -sk -m 1 https://127.0.0.1:8640/rest/version >/dev/null 2>&1 || break; sleep 0.5; done
+    else
+      exit 0
+    fi
+  else
+    nohup curl -sk -m 900 -H 'Origin: https://podpis.gov.pl' 'https://127.0.0.1:8640/rest/certificates?pc=0' >/dev/null 2>&1 &!
+    exit 0
+  fi
+fi
+
+# 3. Start Podpis GOV na Javie x64.
 APP=$PODPISGOV/Contents
 JAR=\$(ls "\$APP/Resources/Java"/podpisgov-*-runnable.jar | sort -V | tail -1)
 cd "\$APP/Resources" || exit 1

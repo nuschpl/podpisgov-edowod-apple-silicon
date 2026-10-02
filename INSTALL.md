@@ -86,6 +86,7 @@ Skrypt kolejno:
    - poprawia ścieżkę do modułu PWPW w konfiguracji Podpis GOV (`~/.pksigner/config.ini`) na dowiązanie bez „ó”,
      bo inaczej **podpis** kończy się błędem „Library … does not exist”,
    - dodaje wystawcę PWPW, jeśli go tam nie ma, więc nie trzeba go dodawać ręcznie,
+   - gdy poprawił ścieżkę, a Podpis GOV już działa (ma starą ścieżkę w pamięci), proponuje „Uruchom ponownie”,
    - gdy Podpis GOV już działa, otwiera okno wyboru certyfikatu.
 5. Wykonuje autotest: ładuje moduł i wyświetla tokeny z e-dowodu.
 
