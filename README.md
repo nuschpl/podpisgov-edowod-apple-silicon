@@ -6,6 +6,9 @@
 Skrypt, dzięki któremu **Podpis GOV** (COI) zaczyna widzieć certyfikaty z **e-dowodu**
 (moduł PKCS#11 od PWPW) na Macach z procesorami Apple Silicon (M1, M2, M3, M4…).
 
+**Status:** sprawdzone na Macu z Apple M1 (macOS 26), czytnik ACS ACR122U. Podpis GOV widzi certyfikat
+kwalifikowany z e-dowodu w oknie wyboru certyfikatu. Pełny podpis dokumentu na gov.pl jeszcze niesprawdzony.
+
 Moduł PKCS#11 od PWPW **nie jest klasycznym modułem**: sam nie łączy się z kartą, tylko korzysta
 z połączenia nawiązanego przez aplikację e-dowód. Dlatego liczy się kolejność. Zobacz
 **[ARCHITEKTURA.md](ARCHITEKTURA.md)** (z diagramem).
