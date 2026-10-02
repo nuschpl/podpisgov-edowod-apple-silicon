@@ -21,7 +21,7 @@
   Numery wersji w bezpośrednich linkach mogą się zmienić. Jeśli link nie działa, wejdź na stronę główną dostawcy.
 - **Czytnik NFC** obsługujący e-dowód. Przetestowano na ACS ACR122U.
 - **Rosetta 2.** Jeśli jej brakuje, skrypt zaproponuje instalację (wymaga hasła administratora).
-- Połączenie z internetem do pobrania Javy (ok. 40 MB).
+- Połączenie z internetem do pobrania Javy (ok. 95 MB) i ok. 300 MB wolnego miejsca.
 
 ## Jak otworzyć Terminal
 
@@ -71,7 +71,7 @@ zsh patch-podpisgov-x64.sh
 Skrypt kolejno:
 
 1. Sprawdza wymagania: Apple Silicon, Podpis GOV, moduł PWPW i Rosettę 2.
-2. Pobiera **Eclipse Temurin 8 JRE dla macOS x64** w konkretnej wersji (8u504-b01),
+2. Pobiera **Azul Zulu 8 JRE z JavaFX dla macOS x64** w konkretnej wersji (8u504, Zulu 8.96),
    weryfikuje jej **sumę SHA-256** i instaluje ją w `~/Library/Application Support/PodpisGOV-x64/`.
 3. Tworzy dowiązanie `/Users/Shared/PodpisGOV-x64/e-dowod-pkcs11-64.dylib` do modułu PWPW,
    czyli ścieżkę bez spacji i polskich znaków.
