@@ -102,6 +102,20 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
 **Przy logowaniu to zawsze PIN1 (4 cyfry).** PIN bywa pytany **dwa razy**: usługa nawiązuje więcej niż jedno
 połączenie z certyfikatem, a rozszerzenie CryptoTokenKit PWPW nie zapamiętuje PIN-u między operacjami.
 
+**podpis.gov.pl to nie tylko podpisywarka plików, ale też router podpisu.** Przyjmuje pliki wgrane przez
+użytkownika oraz pliki przekazane do podpisu przez inne e-usługi, a następnie kieruje podpis do wybranego kanału:
+
+| Kanał | Gdzie działa | Rodzaj podpisu |
+|---|---|---|
+| **Podpis GOV** (COI) | aplikacja na komputerze, lokalne API `localhost:8640` | osobisty lub kwalifikowany z e-dowodu (droga B) |
+| **e-dowód w telefonie** (aplikacja eDO App) | smartfon z NFC, powiązany ze stroną kodem QR | podpis z e-dowodu przez telefon |
+| **Profil Zaufany** | przeglądarka, potwierdzenie kodem SMS | podpis zaufany |
+| **mObywatel** | aplikacja mobilna | m.in. kwalifikowany online, w tym pula darmowych podpisów (wg informacji użytkownika: 5) |
+
+Na Macu z Apple Silicon problem dotyczy tylko pierwszego kanału (Podpis GOV), bo tylko on ładuje x86_64-owy
+moduł PKCS#11 na komputerze. Pozostałe kanały działają poza komputerem lub bez czytnika.
+Na diagramie skrót „podpisywarka i router”.
+
 Inne e-usługi gov.pl (formularze, wnioski) wywołują Podpis GOV tak samo jak B, przez lokalne API
 (`/rest/certificates`, `/rest/sign`), ale to usługa decyduje, co i kiedy jest podpisywane.
 
