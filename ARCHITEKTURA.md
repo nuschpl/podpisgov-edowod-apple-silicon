@@ -66,7 +66,7 @@ niestabilnie, pomaga wyłączenie i ponowne włączenie tej opcji.
 |---|---|---|---|
 | **e-dowód Podpis elektroniczny** (eDOSign) | PWPW | moduł PKCS#11 przez własny wrapper IAIK z własną biblioteką natywną | ✅ widzi certyfikaty, podpisuje (podpis osobisty, kwalifikowany) |
 | **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11: lista certyfikatów przez API IAIK, podpis przez SunPKCS11 | ✅ **podpis osobisty złożony na podpis.gov.pl**; widzi też certyfikat kwalifikowany (2026-10-02) |
-| Safari, Pęk kluczy, Chrome | Apple / PWPW | rozszerzenie CryptoTokenKit | nie testowano |
+| **Przeglądarka** (Firefox, Safari, Chrome): logowanie na login.gov.pl | Apple / PWPW | rozszerzenie CryptoTokenKit (Firefox: wbudowane `osclientcerts`) | ✅ **logowanie do e-Doręczeń e-dowodem, PIN1**, natywnie arm64, bez Rosetty (2026-10-02). |
 
 **Wynik analizy (2026-10-02).** Moduł PWPW zwraca poprawne certyfikaty każdą drogą: bezpośrednio, przez
 wrapper Javy 8 i Javy 21 oraz przez kod Podpis GOV (`PKCS11TokenUtils.getPKCS11Token`), także ze ścieżką
@@ -87,12 +87,13 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
    `PodpisGOV-x64` ponownie, gdy aplikacja już działa.
 3. **Strona gov.pl** łączy się z Podpis GOV przez `https://localhost:8640` i prosi o podpis.
 
-### Podpisanie pliku: dwie alternatywy
+### E-dowód na Macu: trzy drogi (podpis pliku i logowanie)
 
 | | Program | Gdzie | Uwagi |
 |---|---|---|---|
 | **A** | **e-dowód Podpis elektroniczny** (PWPW) | lokalnie, bez przeglądarki | podpis osobisty lub kwalifikowany; działa bez tego obejścia |
 | **B** | **[podpis.gov.pl](https://podpis.gov.pl)** + Podpis GOV (COI) | w przeglądarce | wgrywasz plik, strona woła Podpis GOV; na Apple Silicon przez to obejście |
+| **C** | **logowanie** na login.gov.pl (np. e-Doręczenia): E-dowód → czytnik NFC | przeglądarka | certyfikat profilu osobistego z PIN1 przez CryptoTokenKit; działa natywnie, bez obejścia |
 
 Inne e-usługi gov.pl (formularze, wnioski) wywołują Podpis GOV tak samo jak B, przez lokalne API
 (`/rest/certificates`, `/rest/sign`), ale to usługa decyduje, co i kiedy jest podpisywane.
