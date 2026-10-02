@@ -84,7 +84,9 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
 
 ## Gdzie działa nasze obejście
 
-Obejście z tego repozytorium dotyczy wyłącznie kroku 2. Podpis GOV ma wbudowaną Javę dla Apple Silicon
+Obejście z tego repozytorium dotyczy wyłącznie kroku 2. Oprócz uruchamiania Podpis GOV na Javie x64 launcher
+utrzymuje w `~/.pksigner/config.ini` ścieżkę do modułu bez „ó”. Podpis GOV ładuje moduł **dwiema drogami**:
+listę certyfikatów przez API IAIK (radzi sobie z „ó”) i **sam podpis przez SunPKCS11** (nie radzi sobie). Podpis GOV ma wbudowaną Javę dla Apple Silicon
 (arm64), a moduł PWPW istnieje tylko dla procesorów Intel (x86_64). Skrypt uruchamia więc Podpis GOV
 na Javie x64 z JavaFX (Azul Zulu 8) przez Rosettę 2. Kroki 1 i 3 działają bez zmian.
 

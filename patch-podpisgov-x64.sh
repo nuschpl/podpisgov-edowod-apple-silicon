@@ -147,6 +147,17 @@ if [[ -n "\$RUNNING" ]]; then
   fi
   exit 0
 fi
+# Wystawca e-dowodu w konfiguracji Podpis GOV (~/.pksigner/config.ini):
+#  - okno wyboru pliku zapisuje ścieżkę /Applications/e-dowód.app/... (często jako "o\\u0301"), której SunPKCS11
+#    nie otworzy przy PODPISIE ("Library ... does not exist") -> zamieniamy ją na dowiązanie bez polskich znaków,
+#  - gdy wystawcy PWPW nie ma, dodajemy go, żeby nie trzeba było klikać "Dodaj wystawcę z dysku".
+CFG="\$HOME/.pksigner/config.ini"
+mkdir -p "\${CFG:h}"; touch "\$CFG"
+perl -pi -e 's{^lib = /Applications/e-dowo.*?d\\.app/Contents/lib/(e-dowod-pkcs11-64\\.dylib)}{lib = $LIB_LINK}' "\$CFG"
+if ! grep -q "^lib = $LIB_LINK" "\$CFG"; then
+  N=\$(grep -c '^\\[Tokens/Token' "\$CFG")
+  printf '[Tokens/Token%s]\\napi = PKCS_11\\nmanufacturerID = PWPW S.A.\\nslot = 2\\nlib = %s\\n\\n' "\$N" "$LIB_LINK" >> "\$CFG"
+fi
 APP=$PODPISGOV/Contents
 JAR=\$(ls "\$APP/Resources/Java"/podpisgov-*-runnable.jar | sort -V | tail -1)
 cd "\$APP/Resources" || exit 1

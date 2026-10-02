@@ -82,7 +82,11 @@ Skrypt kolejno:
    weryfikuje jej **sumę SHA-256** i instaluje ją w `~/Library/Application Support/PodpisGOV-x64/`.
 3. Tworzy dowiązanie `/Users/Shared/PodpisGOV-x64/e-dowod-pkcs11-64.dylib` do modułu PWPW,
    czyli ścieżkę bez spacji i polskich znaków.
-4. Tworzy aplikację `~/Applications/PodpisGOV-x64.app`.
+4. Tworzy aplikację `~/Applications/PodpisGOV-x64.app`. Przy każdym starcie aplikacja:
+   - poprawia ścieżkę do modułu PWPW w konfiguracji Podpis GOV (`~/.pksigner/config.ini`) na dowiązanie bez „ó”,
+     bo inaczej **podpis** kończy się błędem „Library … does not exist”,
+   - dodaje wystawcę PWPW, jeśli go tam nie ma, więc nie trzeba go dodawać ręcznie,
+   - gdy Podpis GOV już działa, otwiera okno wyboru certyfikatu.
 5. Wykonuje autotest: ładuje moduł i wyświetla tokeny z e-dowodu.
 
 **Nic w `/Applications` nie jest zmieniane**, więc podpisy kodu Podpis GOV i aplikacji e-dowód

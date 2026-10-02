@@ -56,7 +56,10 @@ wystarczy kliknąć tam.
 
 Jeśli zwykły Podpis GOV jest już otwarty, najpierw go zamknij (patrz [Problemy](#coś-nie-działa)).
 
-## Krok 2. Tylko za pierwszym razem: wskaż Podpis GOV, gdzie jest e-dowód
+## Krok 2. Wystawca e-dowodu (zwykle automatycznie)
+
+**PodpisGOV-x64 sam dodaje wystawcę PWPW** do ustawień Podpis GOV. Zwykle od razu zobaczysz certyfikaty i możesz
+przejść do Kroku 3. Poniższe kroki są potrzebne tylko wtedy, gdy na liście wystawców nie ma „PWPW S.A.”.
 
 1. Otwórz okno wyboru certyfikatu. Po uruchomieniu Podpis GOV działa w tle (na górnym pasku widać
    tylko „java” i ikonę z opcją „Wyjście”), więc **kliknij PodpisGOV-x64 jeszcze raz**: otworzy się okno

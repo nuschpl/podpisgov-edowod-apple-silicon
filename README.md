@@ -82,6 +82,17 @@ Uwaga: [oficjalna instrukcja COI](https://pz.gov.pl/ep-frontend/assets/download/
 każe użytkownikom macOS wskazać właśnie `/Applications/e-dowód.app/Contents/lib/e-dowod-pkcs11-64.dylib`.
 Na Macach z Apple Silicon ta ścieżka nie działa z obu powyższych powodów.
 
+3. **Podpis używa innej drogi niż lista certyfikatów.** Okno wyboru certyfikatu ładuje moduł przez API IAIK i radzi
+   sobie ze ścieżką z „ó”. Sam **podpis** ładuje go jednak przez SunPKCS11 z plikiem konfiguracyjnym. Okno wyboru
+   pliku w macOS zapisuje przy tym ścieżkę w rozłożonej postaci Unicode (`e-dowo\u0301d.app`), więc podpis kończy się
+   błędem, **zanim PIN trafi do karty**:
+
+   ```
+   Library /Applications/e-dowo?d.app/Contents/lib/e-dowod-pkcs11-64.dylib does not exist
+   ```
+
+   Launcher przy każdym starcie poprawia tę ścieżkę w `~/.pksigner/config.ini` na dowiązanie bez polskich znaków.
+
 Rozszerzenie CryptoTokenKit z pakietu e-dowód tu nie pomaga: obsługuje Safari, Pęk kluczy
 i Chrome, ale aplikacje w Javie korzystają tylko z PKCS#11.
 
