@@ -67,7 +67,7 @@
 
 <!-- CTK -->
 <rect class="box" x="250" y="382" width="320" height="86" rx="10"/>
-<text x="266" y="404" class="t h" font-size="13">rozszerzenie CryptoTokenKit (PWPW)</text>
+<text x="266" y="404" class="t h" font-size="13">CryptoTokenKit (z aplikacji e-dowód)</text>
 <text x="266" y="422" class="m" font-size="12">Firefox · Safari · Chrome — natywnie, bez Podpis GOV</text>
 <text x="266" y="442" class="acct h" font-size="11">C · logowanie: login.gov.pl → E-dowód → czytnik NFC</text>
 <text x="266" y="458" class="m" font-size="11">TLS z certyfikatem uwierzytelniającym, PIN1 (4 cyfry)</text>

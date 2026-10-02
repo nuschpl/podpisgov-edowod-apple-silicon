@@ -75,7 +75,7 @@ naraz korzystało z karty. Podpis GOV nie sprawdza wtedy, czy odczytany certyfik
 (`getByteArrayValue()` → `null` → `NullPointerException`). Narzędzia: `tools/p11proxy/` (logujący moduł
 pośredniczący PKCS#11) i `tools/P11Values.java`.
 
-Do tej samej karty sięga też **rozszerzenie CryptoTokenKit** od PWPW, czyli systemowy dostęp macOS dla
+Do tej samej karty sięga też **rozszerzenie CryptoTokenKit** od PWPW (`pl.pwpw.e-dowod.ctkapp.ext`, dostarczane w pakiecie aplikacji **e-dowód**, nie „e-dowód Podpis elektroniczny”), czyli systemowy dostęp macOS dla
 Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z jednej karty i jednego wolnego
 łącza NFC, więc kolejność ma znaczenie.
 
