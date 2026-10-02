@@ -6,6 +6,13 @@
 > To obejście działa dzięki Rosetcie 2, a Apple kończy jej obsługę na macOS 27.
 > Szczegóły w [README](README.md).
 
+> [!IMPORTANT]
+> **Na Macu są DWA foldery „Aplikacje”. Nie pomyl ich.**
+> - **Aplikacje** (systemowy, `/Applications`, w Finderze na pasku bocznym): tu są zwykły **Podpis GOV**
+>   i **e-dowód** od PWPW. **Tego Podpis GOV nie używaj**, bo nie widzi e-dowodu.
+> - **Aplikacje w katalogu domowym** (`~/Applications`, Finder → **Idź → Katalog domowy → Aplikacje**):
+>   tu jest **PodpisGOV-x64**. **To jest ta właściwa ikona.**
+
 ## Wymagania
 
 - Mac z procesorem **Apple Silicon** (M1, M2, M3, M4…). Sprawdzisz to w menu  → **Ten Mac**

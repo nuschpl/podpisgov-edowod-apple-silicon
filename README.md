@@ -100,7 +100,14 @@ Taki proces może już załadować moduł PWPW. Dodatkowo skrypt tworzy dowiąza
    curl -fLO https://raw.githubusercontent.com/nuschpl/podpisgov-edowod-apple-silicon/main/patch-podpisgov-x64.sh && zsh patch-podpisgov-x64.sh
    ```
 
-3. Podpisuj przez **PodpisGOV-x64** z folderu *Aplikacje* w katalogu domowym.
+3. Podpisuj przez **PodpisGOV-x64** z folderu *Aplikacje* **w katalogu domowym** (nie z systemowego folderu Aplikacje).
+
+> [!IMPORTANT]
+> **Na Macu są DWA foldery „Aplikacje”. Nie pomyl ich.**
+> - **Aplikacje** (systemowy, `/Applications`, w Finderze na pasku bocznym): tu są zwykły **Podpis GOV**
+>   i **e-dowód** od PWPW. **Tego Podpis GOV nie używaj**, bo nie widzi e-dowodu.
+> - **Aplikacje w katalogu domowym** (`~/Applications`, Finder → **Idź → Katalog domowy → Aplikacje**):
+>   tu jest **PodpisGOV-x64**. **To jest ta właściwa ikona.**
 
 📦 **[INSTALL.md — szczegółowa instalacja](INSTALL.md)**: wymagania, linki do programów, opcje
 skryptu, aktualizacja i odinstalowanie.
