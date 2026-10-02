@@ -128,6 +128,10 @@ Jeśli Twój certyfikat kwalifikowany na e-dowodzie był **odnawiany**, na karci
 a Podpis GOV myli je przy podpisie. PIN nie jest przy tym blokowany. Podpis kwalifikowany złożysz w aplikacji
 **e-dowód Podpis elektroniczny** od PWPW. Podpis osobisty przez gov.pl działa normalnie.
 
+**Okno „Error … Port 8640 is already in use”**
+Uruchomiła się druga kopia Podpis GOV (np. podwójne kliknięcie w trakcie startu). Kliknij **OK**: pierwsza kopia działa
+dalej. Nowsza wersja PodpisGOV-x64 czeka na startującą kopię i nie uruchamia drugiej. Zaktualizuj skrypt, jeśli to widzisz.
+
 **Kliknięcie nie otwiera okna Podpis GOV**
 - Klikaj aplikację **PodpisGOV-x64** z folderu *Aplikacje* w katalogu domowym albo jej ikonę przypiętą do Docka.
   Ikona **działającego** Podpis GOV w Docku wygląda tak samo, ale kliknięcie jej nic nie robi.
