@@ -93,8 +93,8 @@ Na Macach z Apple Silicon ta ścieżka nie działa z obu powyższych powodów.
    ```
 
    Launcher przy każdym starcie poprawia tę ścieżkę w `~/.pksigner/config.ini` na dowiązanie bez polskich znaków.
-   Zmienia tylko wpis modułu PWPW. Inni wystawcy dodani ręcznie zostają bez zmian. Wystawca PWPW dodany ręcznie
-   w trakcie sesji działa dopiero po ponownym uruchomieniu PodpisGOV-x64.
+   Zmienia tylko wpis modułu PWPW. Inni wystawcy dodani ręcznie zostają bez zmian. Jeśli wystawca PWPW zostanie
+   dodany ręcznie w trakcie sesji, ponowne kliknięcie PodpisGOV-x64 to wykryje i zaproponuje „Uruchom ponownie”.
 
 Rozszerzenie CryptoTokenKit z pakietu e-dowód tu nie pomaga: obsługuje Safari, Pęk kluczy
 i Chrome, ale aplikacje w Javie korzystają tylko z PKCS#11.
