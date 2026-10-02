@@ -104,6 +104,9 @@ skryptu, aktualizacja i odinstalowanie.
 ✍️ **[RUN.md — jak podpisać dokument](RUN.md)**: instrukcja krok po kroku dla osób
 nietechnicznych, bez Terminala, z rozwiązywaniem problemów.
 
+⚖️ **[PODPISY.md — jaki podpis wybrać?](PODPISY.md)**: podpis zaufany, osobisty i kwalifikowany
+oraz kody CAN, PIN1, PIN2 i PUK, wyjaśnione bez żargonu.
+
 ### Ograniczenia
 
 - **Rozwiązanie zależy od Rosetty 2 i przestanie działać po macOS 27**
