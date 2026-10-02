@@ -30,8 +30,9 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    tego potrzebny jest nowy dowód), oraz czy dotyczy to nowszych wersji e-dowodu. Potwierdzone jest tylko pole
    we wniosku dla **podpisu osobistego**.
 
-   > **Podpis zaufany nie jest na dowodzie.** Działa przez Profil Zaufany online (bank, SMS, mObywatel)
-   > i nie korzysta z karty ani z tego modułu. Porównanie wszystkich podpisów: [PODPISY.md](PODPISY.md).
+   > **Podpis zaufany nie ma własnego slotu na dowodzie.** Składa go serwer Profilu Zaufanego, a potwierdzić go
+   > można SMS-em, bankiem, mObywatelem **albo e-dowodem** (smartfon z NFC lub komputer z czytnikiem NFC),
+   > czyli przez profil osobisty z PIN1. Porównanie wszystkich podpisów: [PODPISY.md](PODPISY.md).
 
 3. **Bez tej sesji moduł widzi tylko czytnik.** Zwraca wtedy 1 slot i `CKR_TOKEN_NOT_PRESENT`, mimo że
    dowód leży na czytniku. Czytnik tylko krótko mrugnie (ok. 2 s, odczyt ATR) i nic więcej się nie dzieje.

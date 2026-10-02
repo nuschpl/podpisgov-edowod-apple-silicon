@@ -21,13 +21,13 @@ podpisy, które możesz złożyć e-dowodem lub przez gov.pl, i **kiedy który w
 | | **Podpis zaufany** | **Podpis osobisty** | **Podpis kwalifikowany** |
 |---|---|---|---|
 | Czym jest | Podpis przez Profil Zaufany, w internecie | Certyfikat zapisany w e-dowodzie | Płatny certyfikat kwalifikowany (np. w e-dowodzie) |
-| Potrzebujesz | Profilu Zaufanego (np. przez bank) i telefonu | e-dowodu, czytnika NFC lub telefonu z NFC | certyfikatu kupionego u dostawcy i nośnika (np. e-dowodu) |
-| Czym potwierdzasz | Kodem z SMS-a lub aplikacją | **PIN2 — 6 cyfr** | **PIN do certyfikatu kwalifikowanego — 8 cyfr** (w e-dowodzie) |
+| Potrzebujesz | Profilu Zaufanego (np. przez bank) i telefonu albo e-dowodu z czytnikiem NFC | e-dowodu, czytnika NFC lub telefonu z NFC | certyfikatu kupionego u dostawcy i nośnika (np. e-dowodu) |
+| Czym potwierdzasz | Kodem z SMS-a, aplikacją albo e-dowodem (PIN1, 4 cyfry) | **PIN2 — 6 cyfr** | **PIN do certyfikatu kwalifikowanego — 8 cyfr** (w e-dowodzie) |
 | Koszt | Bezpłatny | Bezpłatny | Płatny |
 | Sprawy urzędowe w Polsce | ✅ Tak | ✅ Tak | ✅ Tak |
 | Umowy z firmami i osobami prywatnymi | ⚠️ Tylko jeśli druga strona się zgodzi | ⚠️ Tylko jeśli druga strona się zgodzi | ✅ **Tak — jak podpis odręczny** |
 | Inne kraje UE | ❌ Zwykle nie | ❌ Zwykle nie | ✅ **Tak** |
-| Działa z tym repozytorium | — (nie wymaga czytnika) | ✅ Tak | ✅ Tak, jeśli certyfikat jest w e-dowodzie |
+| Działa z tym repozytorium | — (nie przez Podpis GOV) | ✅ Tak | ✅ Tak, jeśli certyfikat jest w e-dowodzie |
 
 ### Dlaczego tylko kwalifikowany jest „jak odręczny” wszędzie
 
