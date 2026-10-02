@@ -123,6 +123,11 @@ aplikacja nie wczytuje modułu i zapisuje pustą listę wystawców. Kliknij **Po
 i zaproponuje **„Uruchom ponownie”**. Potem ponów podpis na stronie. Podpis kwalifikowany możesz też złożyć
 w aplikacji **e-dowód Podpis elektroniczny** od PWPW.
 
+**Podpis kwalifikowany: po PIN-ie „Wystąpił błąd i dokument nie został podpisany”**
+Jeśli Twój certyfikat kwalifikowany na e-dowodzie był **odnawiany**, na karcie zostaje też stary, wygasły certyfikat,
+a Podpis GOV myli je przy podpisie. PIN nie jest przy tym blokowany. Podpis kwalifikowany złożysz w aplikacji
+**e-dowód Podpis elektroniczny** od PWPW. Podpis osobisty przez gov.pl działa normalnie.
+
 **Kliknięcie nie otwiera okna Podpis GOV**
 - Klikaj aplikację **PodpisGOV-x64** z folderu *Aplikacje* w katalogu domowym albo jej ikonę przypiętą do Docka.
   Ikona **działającego** Podpis GOV w Docku wygląda tak samo, ale kliknięcie jej nic nie robi.
