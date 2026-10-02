@@ -117,6 +117,12 @@ Gotowe. Strona pokaże podpisany dokument do pobrania.
 - Sprawdź, czy dowód leży na czytniku, a czytnik jest podłączony.
 - Upewnij się, że w Kroku 2 wkleiłeś dokładnie podaną ścieżkę.
 
+**Lista wystawców nagle pusta / „Nie znaleziono certyfikatów” mimo że wcześniej działało**
+Błąd w Podpis GOV: w niektórych sytuacjach (np. podpis kwalifikowany z podpisywarki gov.pl, ręczne „Dodaj wystawcę”)
+aplikacja nie wczytuje modułu i zapisuje pustą listę wystawców. Kliknij **PodpisGOV-x64**: odtworzy wystawcę
+i zaproponuje **„Uruchom ponownie”**. Potem ponów podpis na stronie. Podpis kwalifikowany możesz też złożyć
+w aplikacji **e-dowód Podpis elektroniczny** od PWPW.
+
 **Kliknięcie nie otwiera okna Podpis GOV**
 - Klikaj aplikację **PodpisGOV-x64** z folderu *Aplikacje* w katalogu domowym albo jej ikonę przypiętą do Docka.
   Ikona **działającego** Podpis GOV w Docku wygląda tak samo, ale kliknięcie jej nic nie robi.

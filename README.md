@@ -96,6 +96,12 @@ Na Macach z Apple Silicon ta ścieżka nie działa z obu powyższych powodów.
    Zmienia tylko wpis modułu PWPW. Inni wystawcy dodani ręcznie zostają bez zmian. Jeśli wystawca PWPW zostanie
    dodany ręcznie w trakcie sesji, ponowne kliknięcie PodpisGOV-x64 to wykryje i zaproponuje „Uruchom ponownie”.
 
+4. **Błąd Podpis GOV niezależny od Maca:** tryb „podpis osobisty tak/nie” (`SessionService.personalSignature`)
+   startuje jako `null` i ustawia go tylko żądanie `/rest/certificates?pc=…`. Gdy aplikacja wczytuje wystawców w innej
+   kolejności (np. podpisywarka kwalifikowana z gov.pl), `PKCS11TokenUtils.getPKCS11Token(…, null)` kończy się
+   `NullPointerException` („Wystąpił błąd ładowania biblioteki: null”), lista wystawców jest pusta i **zostaje zapisana
+   do `config.ini`**. Odtworzone 1:1 poza aplikacją. Launcher odtwarza wystawcę i proponuje ponowne uruchomienie.
+
 Rozszerzenie CryptoTokenKit z pakietu e-dowód tu nie pomaga: obsługuje Safari, Pęk kluczy
 i Chrome, ale aplikacje w Javie korzystają tylko z PKCS#11.
 
