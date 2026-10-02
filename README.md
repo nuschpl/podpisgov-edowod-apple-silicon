@@ -62,6 +62,19 @@ i **„Brak zdefiniowanych bibliotek”**.
    sun.security.pkcs11.ConfigurationException: Unexpected value Token['Ã'], line 2
    ```
 
+Ten błąd leży w samej Javie, nie tylko w Javie 8. Sprawdziliśmy to też na Javie 21: parser
+konfiguracji SunPKCS11 czyta plik jako ISO-8859-1 i bez cudzysłowu akceptuje w ścieżce tylko
+znaki ASCII. Ścieżka zapisana w UTF-8 zamienia się więc w `e-dowÃ³d` i biblioteka „nie istnieje”.
+Dowiązanie bez polskich znaków to najprostsze obejście. Mogą to jednak naprawić same firmy:
+- **COI (Podpis GOV)** może zapisywać ścieżkę w konfiguracji w cudzysłowie i w kodowaniu ISO-8859-1.
+  Tak zapisana ścieżka z „ó” działa (sprawdzone na Javie 8).
+- **PWPW** może nazwać folder aplikacji `e-dowod.app`, a „e-dowód” pokazywać tylko jako nazwę
+  wyświetlaną.
+
+Uwaga: [oficjalna instrukcja COI](https://pz.gov.pl/ep-frontend/assets/download/ePodpis_-_Instrukcja_uzytkownika_podpis_osobisty.pdf)
+każe użytkownikom macOS wskazać właśnie `/Applications/e-dowód.app/Contents/lib/e-dowod-pkcs11-64.dylib`.
+Na Macach z Apple Silicon ta ścieżka nie działa z obu powyższych powodów.
+
 Rozszerzenie CryptoTokenKit z pakietu e-dowód tu nie pomaga: obsługuje Safari, Pęk kluczy
 i Chrome, ale aplikacje w Javie korzystają tylko z PKCS#11.
 
@@ -73,64 +86,23 @@ Taki proces może już załadować moduł PWPW. Dodatkowo skrypt tworzy dowiąza
 
 **Nic w `/Applications` nie jest zmieniane**, więc podpisy kodu aplikacji pozostają nienaruszone.
 
-### Wymagania
+### Instalacja i użycie w skrócie
 
-- Mac z Apple Silicon i macOS.
-- Zainstalowany [Podpis GOV](https://www.gov.pl/web/gov/podpisz-dokument-elektronicznie-wykorzystaj-podpis-gov).
-- Zainstalowana aplikacja **e-dowód** od PWPW (oprogramowanie do e-dowodu).
-- Czytnik obsługujący e-dowód. Przetestowano na ACS ACR122U (NFC).
-- Rosetta 2. Jeśli jej brakuje, skrypt zaproponuje instalację (wymaga hasła administratora).
+1. Zainstaluj programy dostawców: **e-dowód** od PWPW ([gov.pl/web/e-dowod](https://www.gov.pl/web/e-dowod))
+   i **Podpis GOV** od COI ([podpis.gov.pl/ui/wp/podpis-gov](https://podpis.gov.pl/ui/wp/podpis-gov)).
+2. Otwórz Terminal i uruchom:
 
-### Instalacja
+   ```bash
+   curl -fLO https://raw.githubusercontent.com/nuschpl/podpisgov-edowod-apple-silicon/main/patch-podpisgov-x64.sh && zsh patch-podpisgov-x64.sh
+   ```
 
-```bash
-zsh patch-podpisgov-x64.sh
-```
+3. Podpisuj przez **PodpisGOV-x64** z folderu *Aplikacje* w katalogu domowym.
 
-Skrypt kolejno:
+📦 **[INSTALL.md — szczegółowa instalacja](INSTALL.md)**: wymagania, linki do programów, opcje
+skryptu, aktualizacja i odinstalowanie.
 
-1. Sprawdza wymagania: Apple Silicon, Podpis GOV, moduł PWPW i Rosettę 2.
-2. Pobiera **Eclipse Temurin 8 JRE dla macOS x64** (ok. 40 MB) w konkretnej wersji (8u504-b01)
-   i weryfikuje jej **sumę SHA-256**. Instaluje ją do `~/Library/Application Support/PodpisGOV-x64/`.
-3. Tworzy dowiązanie `/Users/Shared/PodpisGOV-x64/e-dowod-pkcs11-64.dylib` do modułu PWPW.
-4. Tworzy aplikację `~/Applications/PodpisGOV-x64.app`, która uruchamia zainstalowany Podpis GOV
-   (zawsze najnowszą wersję) na Javie x64.
-5. Na koniec wykonuje autotest: ładuje moduł i wyświetla tokeny z e-dowodu.
-
-Przykładowy wynik autotestu (z dowodem na czytniku):
-
-```
-Moduł: PWPW S.A. - e-dowod, PKCS#11 API v.4.3.4.28
-Czytniki/sloty: 5, z kartą: 5
-  slot 0: E-Dowód (Authentication) #0
-  slot 1: E-Dowód (Presence) #1
-  slot 2: E-Dowód (Authorization) #2
-  slot 3: E-Dowód (Qualified) #3
-  slot 4: eMRTD #4
-```
-
-### Użycie
-
-1. Zamknij zwykły Podpis GOV. Nie uruchamiaj obu wersji jednocześnie.
-2. Otwórz `~/Applications/PodpisGOV-x64.app`. Możesz przeciągnąć ją do Docka.
-3. Wybierz **Dodaj wystawcę z dysku** i wskaż plik
-   `/Users/Shared/PodpisGOV-x64/e-dowod-pkcs11-64.dylib`
-   (w oknie wyboru pliku naciśnij **Cmd+Shift+G** i wklej ścieżkę).
-   Nie wskazuj ścieżki z `/Applications/e-dowód.app`.
-4. Połóż e-dowód na czytniku i przy podpisywaniu podaj PIN.
-
-Nie odinstalowuj oryginalnego Podpis GOV, bo launcher korzysta z jego plików. Aktualizacje
-Podpis GOV są wykrywane automatycznie.
-
-### Pozostałe opcje
-
-```bash
-zsh patch-podpisgov-x64.sh --check                 # tylko test: czy moduł widzi e-dowód
-zsh patch-podpisgov-x64.sh --uninstall             # usuwa wszystko, co skrypt utworzył
-zsh patch-podpisgov-x64.sh --jre-tarball PLIK.tar.gz   # instalacja z wcześniej pobranej Javy
-```
-
-Skrypt można uruchamiać wielokrotnie: każde kolejne uruchomienie naprawia instalację.
+✍️ **[RUN.md — jak podpisać dokument](RUN.md)**: instrukcja krok po kroku dla osób
+nietechnicznych, bez Terminala, z rozwiązywaniem problemów.
 
 ### Ograniczenia
 
@@ -157,7 +129,10 @@ Najlepiej, żeby dotyczyło to całego pakietu e-dowód i aplikacji „e-dowód 
   PWPW po prostu przestanie się uruchamiać.
 - Koszt jest niewielki: kompilacja z `-arch x86_64 -arch arm64` (lub złączenie przez `lipo`)
   i ten sam podpis Developer ID oraz notaryzacja.
-- Warto przy okazji zainstalować moduł pod ścieżką bez polskich znaków albo udostępnić taki alias.
+- Warto przy okazji zainstalować aplikację w folderze o nazwie bez polskich znaków, np.
+  `e-dowod.app`. Nazwa wyświetlana w Finderze może nadal brzmieć „e-dowód” dzięki
+  `CFBundleDisplayName` i lokalizacji pakietu, czyli standardowemu mechanizmowi macOS
+  (szczegóły niżej).
 
 **COI** może ze swojej strony wykrywać niezgodną architekturę biblioteki i wyświetlać czytelny
 komunikat zamiast pustej listy, a docelowo współpracować z PWPW przy testach na Apple Silicon.
