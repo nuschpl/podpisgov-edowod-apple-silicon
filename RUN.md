@@ -17,6 +17,19 @@ Nie trzeba tu nic wpisywać w Terminalu.
 > Po **3 błędnych próbach** PIN zostaje zablokowany. Jeśli nie pamiętasz PIN-u, nie zgaduj.
 > Nowy PIN ustalisz w dowolnym urzędzie gminy.
 
+## Krok 0. Najpierw aplikacja e-dowód
+
+**Kolejność ma znaczenie.** Bezpieczne połączenie z dowodem nawiązuje aplikacja **e-dowód** od PWPW,
+a Podpis GOV korzysta z niego dopiero wtedy, gdy jest gotowe.
+
+1. Otwórz aplikację **e-dowód** (zwykły folder Aplikacje) i połóż dowód na czytniku.
+2. Jeśli zapyta o **CAN**, wpisz 6 cyfr z przodu dowodu.
+3. **Poczekaj na komunikat o odczytaniu certyfikatów.** Na wolniejszych czytnikach NFC trwa to nawet
+   20–40 sekund, a czytnik w tym czasie mruga lub daje sygnał. Nie zdejmuj dowodu.
+
+Dopiero potem otwórz Podpis GOV. Jeśli otworzysz go wcześniej, możesz zobaczyć „Nie znaleziono certyfikatów”.
+Wtedy poczekaj na komunikat aplikacji e-dowód i kliknij **PodpisGOV-x64** ponownie.
+
 ## Krok 1. Otwórz właściwą wersję Podpis GOV
 
 Masz teraz na Macu **dwie ikony** Podpis GOV. Do e-dowodu działa tylko jedna z nich:
@@ -74,6 +87,8 @@ Gotowe. Strona pokaże podpisany dokument do pobrania.
 ## Coś nie działa?
 
 **Widzę „Nie znaleziono certyfikatów”**
+- Najczęstsza przyczyna: aplikacja **e-dowód** nie skończyła jeszcze odczytu (Krok 0). Poczekaj na jej komunikat
+  o odczytanych certyfikatach i kliknij **PodpisGOV-x64** ponownie.
 - Upewnij się, że otworzyłeś **PodpisGOV-x64**, a nie zwykły Podpis GOV (Krok 1).
 - Sprawdź, czy dowód leży na czytniku, a czytnik jest podłączony.
 - Upewnij się, że w Kroku 2 wkleiłeś dokładnie podaną ścieżkę.

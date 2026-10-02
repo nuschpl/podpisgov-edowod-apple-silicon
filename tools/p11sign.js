@@ -8,6 +8,7 @@ var raw = W.PKCS11.getInstance(lib, "C_GetFunctionList", a, false);
 var ti = raw.C_GetTokenInfo(slot);
 var label = new java.lang.String(new java.lang.String(ti.label).getBytes("ISO-8859-1"), "UTF-8").trim();
 var min = ti.ulMinPinLen, max = ti.ulMaxPinLen, fl = ti.flags;
+if (!(fl & 0x4)) { print("\n=== " + label + " — nie wymaga PIN-u, pomijam ==="); exit(0); }
 print("\n=== " + label + " (slot " + slot + ") — PIN: " + min + (min == max ? "" : "–" + max) + " cyfr ===");
 if (fl & 0x40000) { print("PIN ZABLOKOWANY — pomijam. Odblokowanie: kod PUK."); exit(2); }
 if (fl & 0x20000) { print("KARTA ZGŁASZA OSTATNIĄ PRÓBĘ — pomijam, żeby nie zablokować PIN-u."); exit(2); }
