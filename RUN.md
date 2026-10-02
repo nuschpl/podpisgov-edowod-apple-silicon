@@ -1,6 +1,6 @@
 # Jak podpisać dokument e-dowodem na Macu
 
-[← README](README.md) · [← Instalacja](INSTALL.md) · **Podpisywanie**
+[← README](README.md) · [← Instalacja](INSTALL.md) · **Podpisywanie** · [Rodzaje podpisów →](PODPISY.md)
 
 Ta instrukcja jest dla osób, które **mają już zainstalowaną poprawkę** (zobacz [Instalacja](INSTALL.md)).
 Nie trzeba tu nic wpisywać w Terminalu.
@@ -10,7 +10,8 @@ Nie trzeba tu nic wpisywać w Terminalu.
 - **Dowód osobisty z warstwą elektroniczną** (e-dowód, wydany od marca 2019).
 - **Czytnik NFC** podłączony do Maca.
 - **Numer CAN** — 6 cyfr w prawym dolnym rogu **przedniej strony** dowodu.
-- **PIN do podpisu osobistego** — 6 cyfr, ustalony w urzędzie przy odbiorze dowodu albo później.
+- **PIN2 do podpisu osobistego** — 6 cyfr, ustalony w urzędzie gminy (przy odbiorze dowodu albo później),
+  albo **8-cyfrowy PIN** do podpisu kwalifikowanego, jeśli go kupiłeś.
 
 > [!CAUTION]
 > Po **3 błędnych próbach** PIN zostaje zablokowany. Jeśli nie pamiętasz PIN-u, nie zgaduj.
@@ -59,7 +60,9 @@ Jeśli zwykły Podpis GOV jest już otwarty, najpierw go zamknij (patrz [Problem
 3. Gdy aplikacja **e-dowód** poprosi o **numer CAN**, przepisz 6 cyfr z przodu dowodu.
 4. W Podpis GOV kliknij **certyfikat ze swoim imieniem i nazwiskiem** (podpis osobisty),
    a potem **Wybierz certyfikat**. Jeśli masz dokupiony certyfikat kwalifikowany, możesz wybrać ten.
-5. Wpisz **6-cyfrowy PIN** i kliknij **Akceptuję**.
+   Nie wiesz, który wybrać? Zobacz [Jaki podpis wybrać?](PODPISY.md)
+5. Wpisz PIN i kliknij **Akceptuję**: **6 cyfr (PIN2)** dla podpisu osobistego albo **8 cyfr**
+   dla podpisu kwalifikowanego.
 
 Gotowe. Strona pokaże podpisany dokument do pobrania.
 
