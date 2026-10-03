@@ -99,8 +99,16 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
 
 **Logowanie (C) w praktyce:** po „Zaloguj się” macOS pokazuje ogólne okno *„Firefox próbuje podpisać dane”*
 (albo podobne dla Safari/Chrome). To podpis kluczem z dowodu wymagany do połączenia z certyfikatem klienta.
-**Przy logowaniu to zawsze PIN1 (4 cyfry).** PIN bywa pytany **dwa razy**: usługa nawiązuje więcej niż jedno
-połączenie z certyfikatem, a rozszerzenie CryptoTokenKit PWPW nie zapamiętuje PIN-u między operacjami.
+**Przy logowaniu to zawsze PIN1 (4 cyfry).** **Firefox pyta o PIN dwa razy, Safari raz** (sprawdzone 2026-10-03
+w logach systemowych CryptoTokenKit, logowanie do e-Doręczeń):
+- **Safari:** okno wyboru certyfikatu („Witryna login.e-dowod.gov.pl wymaga certyfikatu klienta”), potem jedno
+  sprawdzenie PIN-u i **jedna** operacja podpisu na karcie.
+- **Firefox:** **dwie** operacje podpisu w odstępie ok. 1 s, czyli dwa połączenia TLS z certyfikatem klienta.
+  Przed każdą rozszerzenie PWPW na nowo sprawdza dostęp (`evaluateAccessControl`), stąd drugi PIN.
+
+Przyczyna leży więc po obu stronach: Firefox zestawia drugie połączenie z certyfikatem tam, gdzie Safari używa jednego,
+a rozszerzenie PWPW nie zachowuje uwierzytelnienia między operacjami (dla klucza logowania mogłoby, jak systemowy
+token PIV). Obejście: Safari loguje z jednym PIN-em.
 
 **podpis.gov.pl to nie tylko podpisywarka plików, ale też router podpisu.** Przyjmuje pliki wgrane przez
 użytkownika oraz pliki przekazane do podpisu przez inne e-usługi, a następnie kieruje podpis do wybranego kanału:
