@@ -8,7 +8,9 @@ Skrypt, dzięki któremu **Podpis GOV** (COI) zaczyna widzieć certyfikaty z **e
 
 **Status: działa ✅** Sprawdzone 2026-10-02 na Macu z Apple M1 (macOS 26), czytnik ACS ACR122U:
 **podpis osobisty e-dowodem złożony na podpis.gov.pl** przez Podpis GOV uruchomiony tym obejściem.
-Podpis GOV widzi też certyfikat kwalifikowany z e-dowodu. Podpisu kwalifikowanego przez gov.pl jeszcze nie sprawdzano.
+Podpis GOV widzi też certyfikat kwalifikowany z e-dowodu. **Podpis kwalifikowany po odnowieniu certyfikatu nie działa**
+(sprawdzone 2026-10-02/03 na podpis.gov.pl i w ePUAP), z przyczyny niezależnej od tego obejścia: patrz
+[przyczyna nr 5](#przyczyna) i [UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md).
 
 Moduł PKCS#11 od PWPW **nie jest klasycznym modułem**: sam nie łączy się z kartą, tylko korzysta
 z połączenia nawiązanego przez aplikację e-dowód. Dlatego liczy się kolejność. Zobacz
@@ -105,7 +107,8 @@ Na Macach z Apple Silicon ta ścieżka nie działa z obu powyższych powodów.
 5. **Odnowiony certyfikat kwalifikowany (wszystkie platformy).** Po odnowieniu na tym samym kluczu w slocie Qualified
    są **dwa certyfikaty z tym samym `CKA_ID`**: wygasły i nowy. Okno wyboru pokazuje nowy, ale podpis
    (SunPKCS11 `KeyStore`) łączy klucz z pierwszym, wygasłym certyfikatem. Kończy się to błędem „Nie znaleziono
-   wybranego ceryfikatu”, a strona pokazuje „Wystąpił błąd i dokument nie został podpisany”. PIN jest poprawnie
+   wybranego ceryfikatu”, a strona pokazuje „Wystąpił błąd i dokument nie został podpisany” (podpis.gov.pl) albo HTTP 500
+   na `/rest/sign` (ePUAP). PIN jest poprawnie
    przyjmowany i nie jest blokowany. **Obejście:** podpis kwalifikowany w aplikacji „e-dowód Podpis elektroniczny”.
    Szczegóły: [UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md).
 
