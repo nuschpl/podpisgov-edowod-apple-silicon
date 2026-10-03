@@ -66,7 +66,7 @@ niestabilnie, pomaga wyłączenie i ponowne włączenie tej opcji.
 |---|---|---|---|
 | **e-dowód Podpis elektroniczny** (eDOSign) | PWPW | moduł PKCS#11 przez własny wrapper IAIK z własną biblioteką natywną | ✅ widzi certyfikaty, podpisuje (podpis osobisty, kwalifikowany) |
 | **Podpis GOV** (przez PodpisGOV-x64) | COI | moduł PKCS#11: lista certyfikatów przez API IAIK, podpis przez SunPKCS11 | ✅ **podpis osobisty złożony na podpis.gov.pl**; widzi też certyfikat kwalifikowany (2026-10-02) |
-| **Przeglądarka** (Firefox, Safari, Chrome): logowanie na login.gov.pl | Apple / PWPW | rozszerzenie CryptoTokenKit (Firefox: wbudowane `osclientcerts`) | ✅ **logowanie do e-Doręczeń e-dowodem, PIN1**, natywnie arm64, bez Rosetty (2026-10-02). |
+| **Przeglądarka** (Firefox, Safari, Chrome): logowanie na login.gov.pl | Apple / PWPW | rozszerzenie CryptoTokenKit (Firefox: wbudowane `osclientcerts`) | ✅ **logowanie do e-Doręczeń e-dowodem, PIN1** (2026-10-02). Przeglądarka działa natywnie, ale rozszerzenie CryptoTokenKit PWPW jest tylko x86_64 i działa przez Rosettę. |
 
 **Wynik analizy (2026-10-02).** Moduł PWPW zwraca poprawne certyfikaty każdą drogą: bezpośrednio, przez
 wrapper Javy 8 i Javy 21 oraz przez kod Podpis GOV (`PKCS11TokenUtils.getPKCS11Token`), także ze ścieżką
@@ -136,8 +136,9 @@ Szczegóły techniczne: [README — Przyczyna](README.md#przyczyna).
 - Brak tokenów przed zakończeniem odczytu w aplikacji e-dowód i 5 tokenów po nim:
   `zsh patch-podpisgov-x64.sh --check`.
 - Zatrzymanie samego rozszerzenia CryptoTokenKit nie pomaga. Moduł potrzebuje sesji aplikacji e-dowód.
-- **Podpis kwalifikowany odnowionym certyfikatem działa natywnie przez CryptoTokenKit** (2026-10-03, arm64, bez Rosetty
-  i bez Podpis GOV): rozszerzenie z aplikacji e-dowód udostępnia każdy certyfikat kwalifikowany jako osobną tożsamość
+- **Podpis kwalifikowany odnowionym certyfikatem działa przez CryptoTokenKit** (2026-10-03, bez Podpis GOV; program
+  podpisujący arm64, ale rozszerzenie CTK PWPW `e-dowod_ctkext` jest tylko x86_64 i działa przez Rosettę, więc ta droga
+  też przestanie działać po końcu Rosetty, jeśli PWPW nie wyda wersji arm64): rozszerzenie z aplikacji e-dowód udostępnia każdy certyfikat kwalifikowany jako osobną tożsamość
   (certyfikat + klucz), więc duplikat `CKA_ID` nie przeszkadza. Test: `tools/ctk-sign-test.swift` (RSA 2048,
   PKCS#1 v1.5 SHA-256, podpis zweryfikowany certyfikatem). To podstawa ewentualnego lekkiego zamiennika Podpis GOV:
   e-usługi wysyłają do `/rest/sign` tylko dane do podpisu (`toBeSigned`, np. `SignedInfo` XAdES z ePUAP) i algorytm
