@@ -106,17 +106,20 @@ w logach systemowych CryptoTokenKit, logowanie do e-Doręczeń):
 - **Firefox:** **dwie** operacje podpisu w odstępie ok. 1 s, czyli dwa połączenia TLS z certyfikatem klienta.
   Przed każdą rozszerzenie PWPW na nowo sprawdza dostęp (`evaluateAccessControl`), stąd drugi PIN.
 
-**Dlaczego Firefox podpisuje dwa razy** (log sieciowy Firefoksa, 2026-10-03). `login.e-dowod.gov.pl` działa tylko w
-TLS 1.2 i prosi o certyfikat klienta dopiero przez **renegocjację** przy `POST /sie/login/certLogin`:
-1. POST idzie istniejącym połączeniem → renegocjacja z żądaniem certyfikatu → **podpis chipem nr 1** (PIN).
-2. Zaraz po renegocjacji **serwer zamyka połączenie bez odpowiedzi HTTP**.
-3. Firefox automatycznie ponawia ten sam POST, kasuje zapamiętaną sesję TLS hosta i zestawia nowe połączenie
-   → ponowna renegocjacja → **podpis chipem nr 2** (PIN) → logowanie się udaje.
+**Dlaczego Firefox podpisuje dwa razy** (2026-10-03: przechwyt TCP `tcpdump`, log sieciowy Firefoksa, logi
+CryptoTokenKit). `login.e-dowod.gov.pl` działa tylko w TLS 1.2 i prosi o certyfikat klienta dopiero przez
+**renegocjację** przy `POST /sie/login/certLogin`.
+- **Safari** otwiera osobne połączenie na każde żądanie. POST jest pierwszym żądaniem na świeżym połączeniu → serwer
+  wysyła `CertificateRequest` i **czeka** (w teście 13 s na PIN) → jeden podpis chipem, logowanie.
+- **Firefox** wysyła POST tym samym połączeniem co wcześniejsze żądania (keep-alive) → `CertificateRequest` →
+  **po ok. 0,9 s serwer zamyka połączenie (FIN)**, gdy użytkownik wciąż wpisuje PIN → chip kończy podpis nr 1, ale
+  połączenie już nie istnieje, więc **podpis nie zostaje wysłany** → Firefox ponawia POST na nowym połączeniu → podpis nr 2.
 
-Pierwotna przyczyna leży po stronie serwera (zerwanie połączenia po renegocjacji). Firefox zamienia ją w drugi podpis,
-bo ponawia żądanie na nowej sesji. Oba podpisy trafiają do tego samego serwera w ramach jednego logowania i za każdym
-razem wymagają PIN-u. Rozszerzenie PWPW nie zachowuje uwierzytelnienia między operacjami, dlatego każdy podpis to osobny
-PIN. Obejście: Safari loguje z jednym PIN-em.
+Przyczyna leży po stronie serwera: przerywa renegocjację na połączeniu, które obsłużyło już wcześniejsze żądania (wygląda
+to na krótki limit bezczynności keep-alive w trakcie renegocjacji). Firefox używa połączeń ponownie, więc trafia na ten
+błąd. Mógłby też przerwać prośbę do chipu, gdy połączenie zostanie zamknięte w trakcie czekania na PIN. Pierwszy podpis
+nigdy nie opuszcza komputera. Rozszerzenie PWPW nie zachowuje uwierzytelnienia między operacjami, dlatego każdy podpis
+to osobny PIN. Obejście: Safari loguje z jednym PIN-em.
 
 **podpis.gov.pl to nie tylko podpisywarka plików, ale też router podpisu.** Przyjmuje pliki wgrane przez
 użytkownika oraz pliki przekazane do podpisu przez inne e-usługi, a następnie kieruje podpis do wybranego kanału:
