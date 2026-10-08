@@ -38,12 +38,24 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    dowód leży na czytniku. Czytnik tylko krótko mrugnie (ok. 2 s, odczyt ATR) i nic więcej się nie dzieje.
    Podpis GOV pokazuje wówczas „Nie znaleziono certyfikatów” bez żadnej wskazówki.
 
-4. **Odbiega też od standardu API.** Analiza binarki `e-dowod-pkcs11-64.dylib` (eksporty, symbole, napisy):
-   obok standardowego `C_GetFunctionList` moduł eksportuje **wendorową funkcję `C_SetCAN`** i zwraca **własne kody
-   błędów** spoza standardu Cryptoki (`CKR_PACE_INVALID_CAN`, `CKR_PACE_CARD_NOT_PRESENT`, `CKR_PACE_READER_TIMEOUT`,
-   `CKR_PACE_OPERATION_CANCELED` itd.), z wewnętrznym automatem `CAN_TO_VERIFY → CAN_VERIFIED`. Binarka linkuje PC/SC
-   i zawiera kod PACE, ale **w działającym produkcie żywą sesję trzyma aplikacja e-dowód** (pkt 1, potwierdzone
-   testami); czy moduł potrafi zestawić PACE samodzielnie przez `C_SetCAN` — nie testowano, więc tego nie zakładamy.
+4. **Jest klientem szyfrowanego „Core Cache”, nie rozmawia z kartą.** Napisy w `e-dowod-pkcs11-64.dylib`:
+   `CACHE | ENC | SEND/RECV`, `Read file from Core Cache`, `Password found in cache`, `tries left PIN/PUK from cache`,
+   `Password is empty and password type is not CAN or PUK`. Moduł **czyta stan karty (CAN, pliki, liczniki PIN) z cache**,
+   który **zapełnia aplikacja e-Dowód po zestawieniu PACE** — nie z karty bezpośrednio. Potwierdzone testem izolacyjnym
+   2026-10-08: podczas wywołań modułu **dioda czytnika nie zmienia stanu** (brak APDU), a w osobnym procesie moduł
+   zwraca `CKR_TOKEN_NOT_PRESENT` nawet przy działającej aplikacji (nie uzyskał dostępu do cache).
+   Pełny przebieg i komendy: **[test izolacyjny 2026-10-08](docs/test-izolacyjny-sesja-2026-10-08.md)**.
+
+5. **Odbiega od standardu API.** Obok `C_GetFunctionList` moduł eksportuje **wendorową `C_SetCAN`** i ma własne kody
+   `CKR_PACE_*` (spoza Cryptoki). Ale `C_SetCAN` wywołana z zewnątrz zwraca **`CKR_FUNCTION_NOT_SUPPORTED`** (test
+   2026-10-08) — **nie jest** drogą podania CAN z zewnątrz; CAN pochodzi z cache. (Wcześniej błędnie ująłem `C_SetCAN`
+   jako ścieżkę integracji — korekta na podstawie pomiaru.)
+
+   > **Rodowód OpenSC / LGPL — otwarte.** [OpenSC#1992](https://github.com/OpenSC/OpenSC/issues/1992) (2020) dokumentuje,
+   > że ówczesny moduł wywodził się z OpenSC (logi `[opensc-pkcs11]`, `cache-client.c`, `cache_get_can` — przodek
+   > dzisiejszego „Core Cache”); PWPW odmówiło źródeł (tajemnica handlowa) → niezgodność z LGPL. Nasza binarka v4.3.4.28:
+   > 0 symboli `sc_*`, 144 symbole C++ `PKCS11::` — spójne z przepisaniem, ale **nie wyklucza obfuskacji**. Nie zakładamy
+   > ani nie wykluczamy; do domknięcia porównaniem z wersją archiwalną.
 
 ### CryptoTokenKit a PKCS#11: dwa frontendy, jedna sesja PWPW
 
@@ -53,26 +65,27 @@ To nie są dwa warianty tego samego. **PKCS#11** (Cryptoki) to **standardowe, wi
 publikuje tożsamości karty do systemowego **Pęku kluczy**, a aplikacje używają `Security.framework`/`SecKey` — bez
 ładowania modułu per aplikacja, z systemowym oknem PIN. W obrębie macOS CTK jest **nowszą generacją** (wprowadzony
 ok. macOS 10.10–10.12, następca `tokend`/CDSA) — ale nie jest uniwersalnym następcą PKCS#11, który pozostaje
-standardem międzyplatformowym. Dla e-dowodu **oba są tylko różnymi frontendami nad tą samą sesją PACE trzymaną przez
-aplikację e-dowód PWPW** — CTK (jak PKCS#11) jest jej konsumentem, nie omija aplikacji. PodpisGOV-ng wybiera CTK dla
-czystszej integracji (Pęk kluczy, systemowy PIN, odporność na duplikat `CKA_ID` przy odnowionym certyfikacie), a nie
-po to, by uniezależnić się od aplikacji PWPW.
+standardem międzyplatformowym. Dla e-dowodu **oba są tylko różnymi frontendami nad sesją zestawioną przez aplikację
+e-dowód PWPW** — żaden nie omija aplikacji. Różnią się sposobem współdzielenia (test izolacyjny 2026-10-08):
+- **CTK:** aplikacja **publikuje token+tożsamości do systemowego `ctkd`**; są widoczne międzyprocesowo i **persystują
+  po zamknięciu aplikacji**. To ścieżka PodpisGOV-ng — i dlatego działa.
+- **PKCS#11:** moduł jest **klientem szyfrowanego Core Cache** zapełnianego przez aplikację; w obcym procesie **nie
+  uzyskał sesji** w żadnym stanie (S1–S3).
 
-> **Do domknięcia (test izolacyjny):** że ścieżka CTK także wymaga żywej sesji aplikacji e-dowód, jest dziś silnie
-> poszlakowe (dla PKCS#11 — potwierdzone, pkt 1). Rozstrzygnie: zamknąć aplikację e-dowód, wyczyścić zapamiętany CAN,
-> położyć kartę i sprawdzić podpis CTK (`tools/ctk-sign-test.swift`) oraz listę PKCS#11.
+PodpisGOV-ng wybiera CTK dla czystszej integracji (Pęk kluczy, systemowy PIN, odporność na duplikat `CKA_ID` przy
+odnowionym certyfikacie) — nie po to, by uniezależnić się od aplikacji PWPW (nie da się: sesję i tak zestawia ona).
 
 ### Dlaczego integracja spoza PWPW jest trudna (casus KIR / Szafir / ZUS)
 
-Konsekwencja powyższego dla dostawcy, który nie jest PWPW (np. KIR w ePłatniku ZUS): generyczny host PKCS#11 (Szafir
-SDK) robi standardową ścieżkę „listuj sloty → `C_Login(PIN)` → `C_Sign`”. Nie woła `C_SetCAN`, nie rozumie kodów
-`CKR_PACE_*` i nie uruchamia aplikacji e-dowód, więc PACE się nie zestawia, a moduł zgłasza brak karty/certyfikatów —
-dokładnie objaw z ZUS („Brak certyfikatów… wskaż sterownik karty”). Żywą sesję z kartą trzyma aplikacja PWPW, a jedyne
-działające ścieżki to komponenty PWPW (moduł PKCS#11 skrojony pod jego aplikacje albo rozszerzenie CTK). Część
-niestandardowości jest **technicznie uzasadniona** (PACE/CAN chroni karty bezstykowe i standard PKCS#11 go nie
-definiuje) — z analizy nie wynika zamiar blokowania konkurencji, a jedynie fakt, że architektura **podnosi koszt
-integracji każdemu spoza PWPW**. Przy producencie karty (PWPW) będącym konkurentem KIR w usługach zaufania to
-strukturalna przewaga PWPW. Wątek ZUS prowadzony osobno, od strony prawnej.
+Konsekwencja powyższego dla dostawcy, który nie jest PWPW (np. KIR w ePłatniku ZUS): karta jest osiągalna **tylko przez
+proprietarny, szyfrowany Core Cache, który zapełnia wyłącznie aplikacja PWPW** (po PACE). Generyczny host PKCS#11
+(Szafir SDK) robi standardową ścieżkę „listuj sloty → `C_Login(PIN)` → `C_Sign`”, ale cache jest pusty, więc dostaje
+`CKR_TOKEN_NOT_PRESENT` — dokładnie objaw z ZUS („Brak certyfikatów… wskaż sterownik karty”). **Nawet my**, ładując
+oryginalny moduł PWPW w standardowym JVM, nie uzyskaliśmy sesji z zewnątrz (test 2026-10-08), a `C_SetCAN` z zewnątrz =
+`NOT_SUPPORTED`. Część niestandardowości jest **technicznie uzasadniona** (PACE/CAN chroni karty bezstykowe i standard
+PKCS#11 go nie definiuje) — z analizy **nie wynika zamiar** blokowania konkurencji, a jedynie fakt, że ta warstwa
+**podnosi koszt integracji każdemu spoza PWPW**. Przy producencie karty (PWPW) będącym konkurentem KIR w usługach
+zaufania to strukturalna przewaga PWPW. Wątek ZUS prowadzony osobno, od strony prawnej.
 
 ### Kody PIN i PUK: skąd je mieć
 
