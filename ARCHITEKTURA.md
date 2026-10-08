@@ -38,6 +38,42 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    dowód leży na czytniku. Czytnik tylko krótko mrugnie (ok. 2 s, odczyt ATR) i nic więcej się nie dzieje.
    Podpis GOV pokazuje wówczas „Nie znaleziono certyfikatów” bez żadnej wskazówki.
 
+4. **Odbiega też od standardu API.** Analiza binarki `e-dowod-pkcs11-64.dylib` (eksporty, symbole, napisy):
+   obok standardowego `C_GetFunctionList` moduł eksportuje **wendorową funkcję `C_SetCAN`** i zwraca **własne kody
+   błędów** spoza standardu Cryptoki (`CKR_PACE_INVALID_CAN`, `CKR_PACE_CARD_NOT_PRESENT`, `CKR_PACE_READER_TIMEOUT`,
+   `CKR_PACE_OPERATION_CANCELED` itd.), z wewnętrznym automatem `CAN_TO_VERIFY → CAN_VERIFIED`. Binarka linkuje PC/SC
+   i zawiera kod PACE, ale **w działającym produkcie żywą sesję trzyma aplikacja e-dowód** (pkt 1, potwierdzone
+   testami); czy moduł potrafi zestawić PACE samodzielnie przez `C_SetCAN` — nie testowano, więc tego nie zakładamy.
+
+### CryptoTokenKit a PKCS#11: dwa frontendy, jedna sesja PWPW
+
+To nie są dwa warianty tego samego. **PKCS#11** (Cryptoki) to **standardowe, wieloplatformowe API w C**: aplikacja
+ładuje moduł (`.dylib`/`.so`/`.dll`) do swojego procesu i woła `C_Login`/`C_Sign`; używają go NSS/Firefox, Java
+(SunPKCS11), wiele programów. **CryptoTokenKit** to **natywny framework Apple (macOS/iOS)**: rozszerzenie-token
+publikuje tożsamości karty do systemowego **Pęku kluczy**, a aplikacje używają `Security.framework`/`SecKey` — bez
+ładowania modułu per aplikacja, z systemowym oknem PIN. W obrębie macOS CTK jest **nowszą generacją** (wprowadzony
+ok. macOS 10.10–10.12, następca `tokend`/CDSA) — ale nie jest uniwersalnym następcą PKCS#11, który pozostaje
+standardem międzyplatformowym. Dla e-dowodu **oba są tylko różnymi frontendami nad tą samą sesją PACE trzymaną przez
+aplikację e-dowód PWPW** — CTK (jak PKCS#11) jest jej konsumentem, nie omija aplikacji. PodpisGOV-ng wybiera CTK dla
+czystszej integracji (Pęk kluczy, systemowy PIN, odporność na duplikat `CKA_ID` przy odnowionym certyfikacie), a nie
+po to, by uniezależnić się od aplikacji PWPW.
+
+> **Do domknięcia (test izolacyjny):** że ścieżka CTK także wymaga żywej sesji aplikacji e-dowód, jest dziś silnie
+> poszlakowe (dla PKCS#11 — potwierdzone, pkt 1). Rozstrzygnie: zamknąć aplikację e-dowód, wyczyścić zapamiętany CAN,
+> położyć kartę i sprawdzić podpis CTK (`tools/ctk-sign-test.swift`) oraz listę PKCS#11.
+
+### Dlaczego integracja spoza PWPW jest trudna (casus KIR / Szafir / ZUS)
+
+Konsekwencja powyższego dla dostawcy, który nie jest PWPW (np. KIR w ePłatniku ZUS): generyczny host PKCS#11 (Szafir
+SDK) robi standardową ścieżkę „listuj sloty → `C_Login(PIN)` → `C_Sign`”. Nie woła `C_SetCAN`, nie rozumie kodów
+`CKR_PACE_*` i nie uruchamia aplikacji e-dowód, więc PACE się nie zestawia, a moduł zgłasza brak karty/certyfikatów —
+dokładnie objaw z ZUS („Brak certyfikatów… wskaż sterownik karty”). Żywą sesję z kartą trzyma aplikacja PWPW, a jedyne
+działające ścieżki to komponenty PWPW (moduł PKCS#11 skrojony pod jego aplikacje albo rozszerzenie CTK). Część
+niestandardowości jest **technicznie uzasadniona** (PACE/CAN chroni karty bezstykowe i standard PKCS#11 go nie
+definiuje) — z analizy nie wynika zamiar blokowania konkurencji, a jedynie fakt, że architektura **podnosi koszt
+integracji każdemu spoza PWPW**. Przy producencie karty (PWPW) będącym konkurentem KIR w usługach zaufania to
+strukturalna przewaga PWPW. Wątek ZUS prowadzony osobno, od strony prawnej.
+
 ### Kody PIN i PUK: skąd je mieć
 
 Według [gov.pl — Uzyskaj dowód osobisty](https://www.gov.pl/web/gov/uzyskaj-dowod-osobisty):

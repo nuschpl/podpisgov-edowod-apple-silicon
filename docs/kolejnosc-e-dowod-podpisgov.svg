@@ -20,7 +20,7 @@
 </defs>
 <rect class="bg" width="980" height="730" rx="12"/>
 <text x="30" y="40" class="t h" font-size="20">Kto rozmawia z e-dowodem? Kolejność ma znaczenie</text>
-<text x="30" y="64" class="m" font-size="13">Tunel PACE (CAN) zestawia aplikacja e-dowód. Inne programy korzystają z tej sesji przez moduł PKCS#11 od PWPW.</text>
+<text x="30" y="64" class="m" font-size="13">Tunel PACE (CAN) zestawia aplikacja e-dowód. Inne programy korzystają z tej sesji przez moduł PKCS#11 albo rozszerzenie CryptoTokenKit od PWPW.</text>
 
 <!-- tunel PACE: dowód → czytnik → aplikacja e-dowód -->
 <path class="tun" d="M150,240 L150,282 L190,282 C225,282 215,170 250,165 L250,215 C230,215 238,330 190,330 L150,330 L150,352 L70,352 L70,240 z"/>
