@@ -87,6 +87,25 @@ PKCS#11 go nie definiuje) — z analizy **nie wynika zamiar** blokowania konkure
 **podnosi koszt integracji każdemu spoza PWPW**. Przy producencie karty (PWPW) będącym konkurentem KIR w usługach
 zaufania to strukturalna przewaga PWPW. Wątek ZUS prowadzony osobno, od strony prawnej.
 
+### Etykiety CryptoTokenKit ↔ funkcje (potwierdzone pomiarem 2026-10-08)
+
+Rozszerzenie CTK PWPW nadaje certyfikatom **kosmetyczne, mylące etykiety** — nie odpowiadają wprost funkcji. Twarde
+powiązanie etykieta ↔ wystawca ↔ funkcja (z `SecItemCopyMatching` na tokenie, `tools/ctk-sign-test.swift`):
+
+| Etykieta CTK | Wystawca w certyfikacie | Slot / funkcja | Typ podpisu | PIN |
+|---|---|---|---|---|
+| `eDO_pl-ID MSW` | `pl.ID Authentication CA` | 0 Authentication (**profil osobisty**) | logowanie; potwierdzanie **podpisu zaufanego** (podpis składa serwer PZ) | PIN1 — 4 cyfry |
+| `eDO_pl-ID NFZ` | `pl.ID Presence CA` | 1 Presence (**potwierdzenie obecności**) | **nie podpis** | brak |
+| `eDO_pl-ID e-Podpis` | `pl.ID Authorization CA` | 2 Authorization | **podpis osobisty** | PIN2 — 6 cyfr |
+| `CUZ Sigillum QCA …` | `CUZ Sigillum - QCA1`/`QCA2` | 3 Qualified | **podpis kwalifikowany** | PIN kwalifikowany — 8 cyfr |
+
+Uwaga: slot 4 (eMRTD) nie ma klucza podpisu, więc **nie pojawia się jako tożsamość CTK**. Pełny odczyt daje **5
+tożsamości**: Authentication, Presence, Authorization + **dwa** certyfikaty kwalifikowane, gdy certyfikat był odnawiany
+(stary `QCA1` + bieżący `QCA2`, oba z kluczem — CTK wiąże każdy z własnym kluczem; patrz
+[UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md)). Gdy odczyt jest **niepełny** (słaby czytnik gubi
+cięższy applet kwalifikowany), kwalifikowany bywa widoczny jako **sam certyfikat bez klucza** — wtedy nie jest
+tożsamością i podpis kwalifikowany nie działa, mimo że certyfikat „jest”.
+
 ### Kody PIN i PUK: skąd je mieć
 
 Według [gov.pl — Uzyskaj dowód osobisty](https://www.gov.pl/web/gov/uzyskaj-dowod-osobisty):
