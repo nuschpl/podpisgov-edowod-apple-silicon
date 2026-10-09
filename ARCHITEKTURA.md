@@ -68,6 +68,17 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    > dzisiejszego „Core Cache”); PWPW odmówiło źródeł (tajemnica handlowa) → niezgodność z LGPL. Nasza binarka v4.3.4.28:
    > 0 symboli `sc_*`, 144 symbole C++ `PKCS11::` — spójne z przepisaniem, ale **nie wyklucza obfuskacji**. Nie zakładamy
    > ani nie wykluczamy; do domknięcia porównaniem z wersją archiwalną.
+   >
+   > **OpenSC czyta e-dowód samodzielnie — dowód, że proxy to wybór, nie wymóg karty.** OpenSC ma
+   > dedykowany sterownik `edo` ([PR #2023](https://github.com/OpenSC/OpenSC/pull/2023), wydanie
+   > [0.21.0](https://github.com/OpenSC/OpenSC/releases/tag/0.21.0) z 2020-11-24), oparty na kodzie
+   > niemieckiego dowodu (NPA). **Sam zestawia PACEv2** z numerem CAN (zmienna `EDO_CAN` lub
+   > `opensc.conf`), rozpoznaje kartę po ATR, czyta pliki PKCS#15 i podpisuje — klasyczny, samowystarczalny
+   > moduł PKCS#11, bez aplikacji pośredniczącej. Profil karty to więc **PACEv2 (BSI TR-03110, rodzina NPA)
+   > + PKCS#15, a nie IAS-ECC**. Wniosek: zależność modułu PWPW od sesji aplikacji (Core Cache) jest
+   > **decyzją implementacyjną**, nie koniecznością narzuconą chipem — karta wymusza tylko PACE, nie to,
+   > kto go zestawia. (Znany limit OpenSC: długie APDU psują transmisję — ten sam objaw, co słaby czytnik
+   > gubiący cięższy applet kwalifikowany.)
 
 ### CryptoTokenKit a PKCS#11: dwa frontendy, jedna sesja PWPW
 
@@ -157,6 +168,25 @@ Safari, Pęku kluczy i Chrome. Trzy komponenty jednego dostawcy korzystają z je
 | **C** | **logowanie** na login.gov.pl (np. e-Doręczenia): E-dowód → czytnik NFC | przeglądarka | uwierzytelnienie TLS certyfikatem klienta (profil osobisty, PIN1) przez CryptoTokenKit; działa natywnie, bez obejścia i **bez Podpis GOV** (sprawdzone przy zamkniętym Podpis GOV, 2026-10-02) |
 
 **Dwa łączniki karty z WWW.** Droga A (strzałka z sesji do „e-dowód Podpis elektroniczny”) działa wyłącznie lokalnie. Z przeglądarką kartę łączą tylko: **B** — Podpis GOV (COI) przez lokalne API na portach 8640/8641, wyłącznie do **podpisu**; **C** — rozszerzenie CryptoTokenKit (PWPW) przez macOS, do **uwierzytelnienia** (TLS z certyfikatem klienta na login.e-dowod.gov.pl). Logowanie e-dowodem nie korzysta więc z Podpis GOV.
+
+### Topologia logowania: SAML (Węzeł) + X.509 (karta)
+
+Logowanie e-dowodem to kompletny, standardowy stos federacyjny — nie „tylko certyfikat klienta”.
+Potwierdzone przechwytem HAR (`captures/edor-edor-content-pz-edowod.har`, logowanie do e-Doręczeń,
+2026-10-03). Kolejność ogniw:
+
+1. Usługa końcowa (np. e-Doręczenia) → **`login.gov.pl` = Krajowy Węzeł Identyfikacji** — hub SAML
+   (`POST /login/SingleSignOnService`).
+2. Węzeł przekazuje uwierzytelnienie do **e-dowodu jako osobnego IdP SAML**: `login.e-dowod.gov.pl`
+   ma **własny** `/sie/SingleSignOnService` (SIE = System Identyfikacji Elektronicznej) → 302 do swojej SPA.
+3. SPA (`sie-frontend`, Angular) zbiera wybór narzędzia (czytnik NFC) i CAN.
+4. **Dowód posiadania klucza to X.509**: `POST /sie/login/certLogin` wymusza certyfikat klienta przez
+   **renegocjację TLS 1.2** — podpisuje klucz *Authentication* (slot 0, PIN1).
+5. IdP e-dowodu wystawia asercję SAML do Węzła, Węzeł — asercję do usługi.
+
+Czyli **SAML** jest w dwóch ogniwach (usługa↔Węzeł oraz Węzeł↔IdP-e-dowód), a **X.509/TLS client-cert**
+w jednym, precyzyjnym punkcie (`certLogin` na `login.e-dowod.gov.pl`). Protokoły są pełne i poprawne —
+to nie w nich leży problem interoperacyjności.
 
 **Logowanie (C) w praktyce:** po „Zaloguj się” macOS pokazuje ogólne okno *„Firefox próbuje podpisać dane”*
 (albo podobne dla Safari/Chrome). To podpis kluczem z dowodu wymagany do połączenia z certyfikatem klienta.
