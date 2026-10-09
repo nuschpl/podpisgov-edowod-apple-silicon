@@ -123,6 +123,29 @@ PKCS#11 go nie definiuje) — z analizy **nie wynika zamiar** blokowania konkure
 **podnosi koszt integracji każdemu spoza PWPW**. Przy producencie karty (PWPW) będącym konkurentem KIR w usługach
 zaufania to strukturalna przewaga PWPW. Wątek ZUS prowadzony osobno, od strony prawnej.
 
+### Generacje e-dowodu i chipy (z modułu PWPW 4.3.4.28)
+
+Moduł PWPW obsługuje wiele wariantów karty — ujawniają to klasy w binarce `e-dowod-pkcs11-64.dylib`:
+
+| Warstwa | Warianty widoczne w module |
+|---|---|
+| Chip / aplet | NXP P60 ChipDoc 2.0, NXP P71 ChipDoc 3.0, NXP P71 SmartApp ID 5.0, Thales MAV 5.0 |
+| Kontroler dokumentu (generacja) | e-dowód 1.0, 2.0, 2.1, 2.2 |
+| Protokoły | PACE, Chip Authentication, Mutual Authentication |
+
+Karta testowa w tym repo: ATR `3b:84:80:01:47:43:50:43:12`, aplet podpisowy o etykiecie **„ChipDoc"**
+(AID `A0 00 00 01 67` + „ESIGN"), kanał **PACE ECDH-GM-AES-256-CBC-CMAC na brainpoolP384r1**.
+
+**Co to znaczy dla podpisów ([PODPISY.md](PODPISY.md)):** funkcje karty (5 slotów — uwierzytelnienie/PIN1,
+obecność, podpis osobisty/PIN2, podpis kwalifikowany/PIN-8, eMRTD) są **ortogonalne** do generacji sprzętu.
+Generacja/chip wpływa na parametry kryptograficzne (np. krzywa i siła PACE), nie na to, które podpisy dowód
+udostępnia. **Nie mapujemy** generacji na zakres funkcji — moduł rozróżnia warianty, ale z samej binarki nie
+wynika „generacja X = funkcja Y".
+
+**Czego to NIE wyjaśnia:** awarii PACE w OpenSC (`69 86`). Sterownik `edo` celuje w **ten sam ATR** co nasza
+karta, więc „inna generacja" nie jest wyjaśnieniem; przyczyna `69 86` pozostaje nieustalona
+([docs/opensc-edo-pace-RE-2026-10-09.md](docs/opensc-edo-pace-RE-2026-10-09.md)).
+
 ### Kody PIN i PUK: skąd je mieć
 
 Według [gov.pl — Uzyskaj dowód osobisty](https://www.gov.pl/web/gov/uzyskaj-dowod-osobisty):
