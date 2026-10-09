@@ -18,8 +18,9 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    **5 wirtualnych slotów**, po jednym na każdą funkcję dowodu:
 
    **Tabela-źródło** (spina slot PKCS#11 ↔ etykietę CryptoTokenKit ↔ wystawcę certyfikatu ↔ funkcję/typ podpisu ↔ PIN;
-   patrz też [PODPISY.md](PODPISY.md)). Łańcuch etykieta→wystawca→funkcja→PIN potwierdzony pomiarem (`ctk-map2`,
-   `tools/ctk-sign-test.swift`, karta PWPW 4.3.4.28, 2026-10-08); indeks slotu z enumeracji modułu PKCS#11:
+   patrz też [PODPISY.md](PODPISY.md)). Łańcuch etykieta→wystawca→funkcja→PIN potwierdzony pomiarem
+   (`tools/ctk-cert-map.swift`, `tools/ctk-sign-test.swift`, karta PWPW 4.3.4.28, 2026-10-08); indeks slotu z enumeracji
+   modułu PKCS#11:
 
    | Slot | Token PKCS#11 | Etykieta CTK | Wystawca certyfikatu | Funkcja / typ podpisu (PODPISY.md) | PIN | PUK |
    |---|---|---|---|---|---|---|
