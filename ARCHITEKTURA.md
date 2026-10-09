@@ -138,8 +138,7 @@ Karta testowa w tym repo: ATR `3b:84:80:01:47:43:50:43:12`, aplet podpisowy o et
 (AID `A0 00 00 01 67` + „ESIGN"), kanał **PACE ECDH-GM-AES-256-CBC-CMAC na brainpoolP384r1**. Wg
 [OpenSC#1831](https://github.com/OpenSC/OpenSC/issues/1831) ten ATR odpowiada **generacji 1.0 (NXP P60)** — ale
 **ATR nie jest pewnym wyróżnikiem generacji** (producent może zachować go między rewizjami firmware); mocniejszym
-potwierdzeniem rodziny jest zgodność parametrów PACE (AES-256/brainpoolP384r1). Szczegóły i mapa ATR↔generacja:
-[docs/opensc-edo-pace-RE-2026-10-09.md](docs/opensc-edo-pace-RE-2026-10-09.md).
+potwierdzeniem rodziny jest zgodność parametrów PACE (AES-256/brainpoolP384r1).
 
 **Co to znaczy dla podpisów ([PODPISY.md](PODPISY.md)):** funkcje karty (5 slotów — uwierzytelnienie/PIN1,
 obecność, podpis osobisty/PIN2, podpis kwalifikowany/PIN-8, eMRTD) są **ortogonalne** do generacji sprzętu.
@@ -148,8 +147,7 @@ udostępnia. **Nie mapujemy** generacji na zakres funkcji — moduł rozróżnia
 wynika „generacja X = funkcja Y".
 
 **Czego to NIE wyjaśnia:** awarii PACE w OpenSC (`69 86`). Sterownik `edo` celuje w **ten sam ATR** co nasza
-karta, więc „inna generacja" nie jest wyjaśnieniem; przyczyna `69 86` pozostaje nieustalona
-([docs/opensc-edo-pace-RE-2026-10-09.md](docs/opensc-edo-pace-RE-2026-10-09.md)).
+karta, więc „inna generacja" nie jest wyjaśnieniem; przyczyna `69 86` pozostaje nieustalona.
 
 ### Kody PIN i PUK: skąd je mieć
 

@@ -13,7 +13,7 @@ Pliki PDF w tym katalogu są **gitignorowane** (duże binaria / warunki redystry
 
 **Do czego:** kanoniczna specyfikacja **PACE** (Password Authenticated Connection Establishment) i Chip Authentication —
 struktura `MSE:Set AT`, `GENERAL AUTHENTICATE` (Generic Mapping), OID protokołów, parametry domeny. Potrzebna do łatki
-sterownika OpenSC `edo` pod e-dowód (wątek: `../opensc-edo-pace-RE-2026-10-09.md`, [OpenSC#1831](https://github.com/OpenSC/OpenSC/issues/1831)).
+sterownika OpenSC `edo` pod e-dowód ([OpenSC#1831](https://github.com/OpenSC/OpenSC/issues/1831)).
 
 **Odtworzenie (gdy brak pliku):**
 ```bash
