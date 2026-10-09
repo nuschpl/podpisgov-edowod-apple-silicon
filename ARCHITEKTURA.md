@@ -69,16 +69,20 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    > 0 symboli `sc_*`, 144 symbole C++ `PKCS11::` — spójne z przepisaniem, ale **nie wyklucza obfuskacji**. Nie zakładamy
    > ani nie wykluczamy; do domknięcia porównaniem z wersją archiwalną.
    >
-   > **OpenSC czyta e-dowód samodzielnie — dowód, że proxy to wybór, nie wymóg karty.** OpenSC ma
-   > dedykowany sterownik `edo` ([PR #2023](https://github.com/OpenSC/OpenSC/pull/2023), wydanie
-   > [0.21.0](https://github.com/OpenSC/OpenSC/releases/tag/0.21.0) z 2020-11-24), oparty na kodzie
-   > niemieckiego dowodu (NPA). **Sam zestawia PACEv2** z numerem CAN (zmienna `EDO_CAN` lub
-   > `opensc.conf`), rozpoznaje kartę po ATR, czyta pliki PKCS#15 i podpisuje — klasyczny, samowystarczalny
-   > moduł PKCS#11, bez aplikacji pośredniczącej. Profil karty to więc **PACEv2 (BSI TR-03110, rodzina NPA)
-   > + PKCS#15, a nie IAS-ECC**. Wniosek: zależność modułu PWPW od sesji aplikacji (Core Cache) jest
-   > **decyzją implementacyjną**, nie koniecznością narzuconą chipem — karta wymusza tylko PACE, nie to,
-   > kto go zestawia. (Znany limit OpenSC: długie APDU psują transmisję — ten sam objaw, co słaby czytnik
-   > gubiący cięższy applet kwalifikowany.)
+   > **OpenSC ma własny sterownik e-dowodu — dowód projektowy, że proxy to wybór, nie wymóg karty.**
+   > W źródłach OpenSC istnieje sterownik `edo` (`src/libopensc/card-edo.c`,
+   > [PR #2023](https://github.com/OpenSC/OpenSC/pull/2023), 2020), nazwa „Polish eID card (e-dowód, eDO)",
+   > ATR `3b:84:80:01:47:43:50:43:12`, oparty na kodzie niemieckiego dowodu (NPA). **Z projektu sam
+   > zestawia PACEv2** z numerem CAN (`getenv("EDO_CAN")` lub config `card_driver edo { can = … }`),
+   > czyta pliki PKCS#15 i podpisuje — bez aplikacji pośredniczącej. Profil karty to więc **PACEv2
+   > (BSI TR-03110, rodzina NPA) + PKCS#15, a nie IAS-ECC**. Wniosek (projektowy): zależność modułu PWPW
+   > od sesji aplikacji (Core Cache) jest **decyzją implementacyjną**, nie koniecznością narzuconą chipem.
+   > **Zastrzeżenie — niezweryfikowane u nas:** sterownik `edo` jest za flagą builda
+   > `#if defined(ENABLE_SM) && defined(ENABLE_OPENPACE)`; **OpenSC 0.27.1 z Homebrew zbudowano bez
+   > OpenPACE**, więc go nie zawiera (brak na liście sterowników, brak `EDO_CAN` w binariach, 2026-10-09).
+   > Empiryczny odczyt/podpis na naszej karcie wymaga builda OpenSC z OpenPACE i jest **do zrobienia**.
+   > (Znany limit OpenSC: długie APDU psują transmisję — ten sam objaw, co słaby czytnik gubiący cięższy
+   > applet kwalifikowany.)
 
 ### CryptoTokenKit a PKCS#11: dwa frontendy, jedna sesja PWPW
 
