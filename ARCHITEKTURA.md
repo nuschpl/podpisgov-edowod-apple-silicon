@@ -77,12 +77,21 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    > czyta pliki PKCS#15 i podpisuje — bez aplikacji pośredniczącej. Profil karty to więc **PACEv2
    > (BSI TR-03110, rodzina NPA) + PKCS#15, a nie IAS-ECC**. Wniosek (projektowy): zależność modułu PWPW
    > od sesji aplikacji (Core Cache) jest **decyzją implementacyjną**, nie koniecznością narzuconą chipem.
-   > **Zastrzeżenie — niezweryfikowane u nas:** sterownik `edo` jest za flagą builda
-   > `#if defined(ENABLE_SM) && defined(ENABLE_OPENPACE)`; **OpenSC 0.27.1 z Homebrew zbudowano bez
-   > OpenPACE**, więc go nie zawiera (brak na liście sterowników, brak `EDO_CAN` w binariach, 2026-10-09).
-   > Empiryczny odczyt/podpis na naszej karcie wymaga builda OpenSC z OpenPACE i jest **do zrobienia**.
-   > (Znany limit OpenSC: długie APDU psują transmisję — ten sam objaw, co słaby czytnik gubiący cięższy
-   > applet kwalifikowany.)
+   > **Build-flag:** sterownik `edo` jest za `#if defined(ENABLE_SM) && defined(ENABLE_OPENPACE)`;
+   > **OpenSC 0.27.1 z Homebrew zbudowano bez OpenPACE**, więc go nie zawiera (brak na liście sterowników,
+   > brak `EDO_CAN` w binariach). Zbudowaliśmy więc OpenSC ze źródeł z `--enable-sm --enable-openpace`
+   > (sterownik `edo` obecny).
+   >
+   > **Wynik empiryczny (2026-10-09, żywa karta, ACR122U): OpenSC NIE odczytuje tego e-dowodu
+   > end-to-end.** `edo` rozpoznaje ATR (`3b:84:80:01:47:43:50:43:12`), czyta CAN z `EDO_CAN`, startuje
+   > PACE — ale **MSE:Set AT** (`00 22 C1 A4 … OID PACE … 83 01 02`) zwraca z karty **`69 86` „Command
+   > not allowed (no current EF)"**, PACE pada (`edo_unlock: Error verifying CAN`), token „not recognized".
+   > Powtarzalne, także po zatrzymaniu rozszerzenia CTK PWPW. **Przyczyna nierozstrzygnięta:** sterownik
+   > `edo` (2020) vs obecny firmware karty / sekwencja PACE, ewentualnie APDU ACR122U. **NIE** „czytnik nie
+   > umie PACE" — aplikacja PWPW zestawia PACE tym samym czytnikiem. Wniosek (ostrożny): otwarta ścieżka
+   > **istnieje w kodzie (dowód projektowy, że proxy = wybór), ale nie domyka się end-to-end wobec obecnej
+   > karty — wymaga łatki sterownika lub czytnika klasy PACE.** (Znany limit OpenSC: długie APDU — ten sam
+   > objaw, co słaby czytnik gubiący cięższy applet.)
 
 ### CryptoTokenKit a PKCS#11: dwa frontendy, jedna sesja PWPW
 
