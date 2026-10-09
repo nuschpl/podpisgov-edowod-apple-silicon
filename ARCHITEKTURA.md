@@ -71,7 +71,8 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
    >
    > **OpenSC ma własny sterownik e-dowodu — dowód projektowy, że proxy to wybór, nie wymóg karty.**
    > W źródłach OpenSC istnieje sterownik `edo` (`src/libopensc/card-edo.c`,
-   > [PR #2023](https://github.com/OpenSC/OpenSC/pull/2023), 2020), nazwa „Polish eID card (e-dowód, eDO)",
+   > [PR #2023](https://github.com/OpenSC/OpenSC/pull/2023), 2020, autorstwa **Piotra Majkrzaka** — copyright
+   > w nagłówku `card-edo.c`), nazwa „Polish eID card (e-dowód, eDO)",
    > ATR `3b:84:80:01:47:43:50:43:12`, oparty na kodzie niemieckiego dowodu (NPA). **Z projektu sam
    > zestawia PACEv2** z numerem CAN (`getenv("EDO_CAN")` lub config `card_driver edo { can = … }`),
    > czyta pliki PKCS#15 i podpisuje — bez aplikacji pośredniczącej. Profil karty to więc **PACEv2
