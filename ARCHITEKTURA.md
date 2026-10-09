@@ -135,7 +135,11 @@ Moduł PWPW obsługuje wiele wariantów karty — ujawniają to klasy w binarce 
 | Protokoły | PACE, Chip Authentication, Mutual Authentication |
 
 Karta testowa w tym repo: ATR `3b:84:80:01:47:43:50:43:12`, aplet podpisowy o etykiecie **„ChipDoc"**
-(AID `A0 00 00 01 67` + „ESIGN"), kanał **PACE ECDH-GM-AES-256-CBC-CMAC na brainpoolP384r1**.
+(AID `A0 00 00 01 67` + „ESIGN"), kanał **PACE ECDH-GM-AES-256-CBC-CMAC na brainpoolP384r1**. Wg
+[OpenSC#1831](https://github.com/OpenSC/OpenSC/issues/1831) ten ATR odpowiada **generacji 1.0 (NXP P60)** — ale
+**ATR nie jest pewnym wyróżnikiem generacji** (producent może zachować go między rewizjami firmware); mocniejszym
+potwierdzeniem rodziny jest zgodność parametrów PACE (AES-256/brainpoolP384r1). Szczegóły i mapa ATR↔generacja:
+[docs/opensc-edo-pace-RE-2026-10-09.md](docs/opensc-edo-pace-RE-2026-10-09.md).
 
 **Co to znaczy dla podpisów ([PODPISY.md](PODPISY.md)):** funkcje karty (5 slotów — uwierzytelnienie/PIN1,
 obecność, podpis osobisty/PIN2, podpis kwalifikowany/PIN-8, eMRTD) są **ortogonalne** do generacji sprzętu.

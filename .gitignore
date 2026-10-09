@@ -6,3 +6,6 @@ jre/
 pisma/
 STATUS.md
 captures/
+
+# duże specy PDF — trzymamy tylko źródło w docs/specs/README.md
+docs/specs/*.pdf
