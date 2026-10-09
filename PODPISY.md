@@ -55,6 +55,11 @@ W kopercie i w urzędzie spotkasz kilka kodów. Łatwo je pomylić:
 > wymaga **4 cyfr** (PIN1), *Authorization* (podpis osobisty) **6 cyfr** (PIN2), a *Qualified*
 > (podpis kwalifikowany) **8 cyfr**. Sprawdzisz to u siebie bez wpisywania PIN-u, uruchamiając
 > `tools/test-podpisow.sh` (krok 1).
+>
+> Pełne powiązanie **typ podpisu ↔ slot PKCS#11 ↔ etykieta CryptoTokenKit ↔ wystawca certyfikatu**:
+> tabela-źródło w [ARCHITEKTURA.md](ARCHITEKTURA.md) (sekcja „Moduł PKCS#11 od PWPW…”). W skrócie: **podpis zaufany**
+> potwierdzasz certyfikatem *Authentication* (etykieta CTK `eDO_pl-ID MSW`, PIN1), **podpis osobisty** to *Authorization*
+> (`eDO_pl-ID e-Podpis`, PIN2), **podpis kwalifikowany** to *Qualified* (`CUZ Sigillum QCA`, PIN 8 cyfr).
 
 **Ważne o PIN1 i PIN2:** ustalasz je w urzędzie gminy, najczęściej przy odbiorze dowodu.
 Jeśli wtedy tego nie zrobiłeś, możesz to zrobić **później w dowolnym urzędzie gminy**. Bez tego

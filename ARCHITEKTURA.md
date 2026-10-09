@@ -17,13 +17,24 @@ Moduł e-dowodu (`e-dowod-pkcs11-64.dylib`) działa inaczej:
 2. **Moduł korzysta z gotowej sesji.** Gdy aplikacja e-dowód zakończy odczyt, moduł pokazuje
    **5 wirtualnych slotów**, po jednym na każdą funkcję dowodu:
 
-   | Slot | Token (nazwa w module) | Nazwa urzędowa | PIN | PUK |
-   |---|---|---|---|---|
-   | 0 | E-Dowód (Authentication) | **profil osobisty**: certyfikat identyfikacji i uwierzytelnienia (logowanie e-dowodem) | 4 cyfry (PIN1) | **tak**: PUK dowodu (8 cyfr) |
-   | 1 | E-Dowód (Presence) | **potwierdzenie obecności**: certyfikat potwierdzenia obecności | brak | nie dotyczy |
-   | 2 | E-Dowód (Authorization) | **podpis osobisty**: certyfikat podpisu osobistego | 6 cyfr (PIN2) | **tak**: PUK dowodu (8 cyfr) |
-   | 3 | E-Dowód (Qualified) | **podpis kwalifikowany**: certyfikat kwalifikowany, opcjonalny, kupowany u PWPW (Sigillum) | 8 cyfr | **tak**: PUK dowodu (8 cyfr), **niezbędny do zakupu i aktywacji** certyfikatu w PWPW¹ |
-   | 4 | eMRTD | **dokument podróży**: dane do kontroli granicznej (ICAO), np. zdjęcie | brak (dostęp przez CAN) | nie dotyczy |
+   **Tabela-źródło** (spina slot PKCS#11 ↔ etykietę CryptoTokenKit ↔ wystawcę certyfikatu ↔ funkcję/typ podpisu ↔ PIN;
+   patrz też [PODPISY.md](PODPISY.md)). Łańcuch etykieta→wystawca→funkcja→PIN potwierdzony pomiarem (`ctk-map2`,
+   `tools/ctk-sign-test.swift`, karta PWPW 4.3.4.28, 2026-10-08); indeks slotu z enumeracji modułu PKCS#11:
+
+   | Slot | Token PKCS#11 | Etykieta CTK | Wystawca certyfikatu | Funkcja / typ podpisu (PODPISY.md) | PIN | PUK |
+   |---|---|---|---|---|---|---|
+   | 0 | E-Dowód (Authentication) | `eDO_pl-ID MSW` | `pl.ID Authentication CA` | **profil osobisty**: logowanie; potwierdzanie **podpisu zaufanego** (podpis składa serwer PZ) | **PIN1 — 4 cyfry** | PUK dowodu (8 cyfr) |
+   | 1 | E-Dowód (Presence) | `eDO_pl-ID NFZ` | `pl.ID Presence CA` | **potwierdzenie obecności** (nie podpis) | brak | nie dotyczy |
+   | 2 | E-Dowód (Authorization) | `eDO_pl-ID e-Podpis` | `pl.ID Authorization CA` | **podpis osobisty** | **PIN2 — 6 cyfr** | PUK dowodu (8 cyfr) |
+   | 3 | E-Dowód (Qualified) | `CUZ Sigillum QCA …` | `CUZ Sigillum - QCA1`/`QCA2` | **podpis kwalifikowany** (opcjonalny, Sigillum) | **PIN kwalif. — 8 cyfr** | PUK dowodu (8 cyfr)¹ |
+   | 4 | eMRTD | — (bez klucza, nie jest tożsamością CTK) | — | **dokument podróży** (ICAO, np. zdjęcie) | brak (dostęp przez CAN) | nie dotyczy |
+
+   Etykiety CTK są **kosmetyczne i mylące** (PWPW): „MSW” = uwierzytelnienie, „NFZ” = obecność, „e-Podpis” = podpis
+   osobisty — mapowanie wyżej usuwa dwuznaczność. Pełny odczyt daje **5 tożsamości**: Authentication, Presence,
+   Authorization + **dwa** certyfikaty kwalifikowane po odnowieniu (stary `QCA1` + bieżący `QCA2`, oba z kluczem; CTK
+   wiąże każdy z własnym kluczem — [UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md)). Przy **niepełnym**
+   odczycie (słaby czytnik gubi cięższy applet kwalifikowany) kwalifikowany bywa widoczny jako **sam certyfikat bez
+   klucza** → nie jest tożsamością → podpis kwalifikowany nie działa, mimo że certyfikat „jest”.
 
    ¹ Z doświadczenia autora: aktywacja certyfikatu kwalifikowanego w PWPW wymaga kodu PUK z koperty odebranej
    w urzędzie. **Niepotwierdzone:** czy na starszych dowodach trzeba było zaznaczyć tę opcję we wniosku (i czy bez
@@ -86,25 +97,6 @@ oryginalny moduł PWPW w standardowym JVM, nie uzyskaliśmy sesji z zewnątrz (t
 PKCS#11 go nie definiuje) — z analizy **nie wynika zamiar** blokowania konkurencji, a jedynie fakt, że ta warstwa
 **podnosi koszt integracji każdemu spoza PWPW**. Przy producencie karty (PWPW) będącym konkurentem KIR w usługach
 zaufania to strukturalna przewaga PWPW. Wątek ZUS prowadzony osobno, od strony prawnej.
-
-### Etykiety CryptoTokenKit ↔ funkcje (potwierdzone pomiarem 2026-10-08)
-
-Rozszerzenie CTK PWPW nadaje certyfikatom **kosmetyczne, mylące etykiety** — nie odpowiadają wprost funkcji. Twarde
-powiązanie etykieta ↔ wystawca ↔ funkcja (z `SecItemCopyMatching` na tokenie, `tools/ctk-sign-test.swift`):
-
-| Etykieta CTK | Wystawca w certyfikacie | Slot / funkcja | Typ podpisu | PIN |
-|---|---|---|---|---|
-| `eDO_pl-ID MSW` | `pl.ID Authentication CA` | 0 Authentication (**profil osobisty**) | logowanie; potwierdzanie **podpisu zaufanego** (podpis składa serwer PZ) | PIN1 — 4 cyfry |
-| `eDO_pl-ID NFZ` | `pl.ID Presence CA` | 1 Presence (**potwierdzenie obecności**) | **nie podpis** | brak |
-| `eDO_pl-ID e-Podpis` | `pl.ID Authorization CA` | 2 Authorization | **podpis osobisty** | PIN2 — 6 cyfr |
-| `CUZ Sigillum QCA …` | `CUZ Sigillum - QCA1`/`QCA2` | 3 Qualified | **podpis kwalifikowany** | PIN kwalifikowany — 8 cyfr |
-
-Uwaga: slot 4 (eMRTD) nie ma klucza podpisu, więc **nie pojawia się jako tożsamość CTK**. Pełny odczyt daje **5
-tożsamości**: Authentication, Presence, Authorization + **dwa** certyfikaty kwalifikowane, gdy certyfikat był odnawiany
-(stary `QCA1` + bieżący `QCA2`, oba z kluczem — CTK wiąże każdy z własnym kluczem; patrz
-[UWAGA-ODNOWIONE-CERTYFIKATY.md](UWAGA-ODNOWIONE-CERTYFIKATY.md)). Gdy odczyt jest **niepełny** (słaby czytnik gubi
-cięższy applet kwalifikowany), kwalifikowany bywa widoczny jako **sam certyfikat bez klucza** — wtedy nie jest
-tożsamością i podpis kwalifikowany nie działa, mimo że certyfikat „jest”.
 
 ### Kody PIN i PUK: skąd je mieć
 
